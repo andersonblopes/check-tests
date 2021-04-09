@@ -18,7 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 public class MainController {
 
-    private String message;
+    private String cardHeader;
 
     /**
      * Index model and view.
@@ -29,8 +29,8 @@ public class MainController {
     @GetMapping("/")
     public ModelAndView index(ModelAndView modelAndView) {
         modelAndView.setViewName("index");
-        message = "Welcome to the Belgium!";
-        modelAndView.addObject("message", message);
+        cardHeader = "Bem vindo(a) ao 'check-tests'";
+        modelAndView.addObject("cardHeader", cardHeader);
         return modelAndView;
     }
 
@@ -43,8 +43,16 @@ public class MainController {
     @GetMapping("/result")
     public ModelAndView result(ModelAndView modelAndView){
         modelAndView.setViewName("result-view");
-        message = "O resultado do processo seletivo";
-        modelAndView.addObject("message", message);
+        cardHeader = "O resultado do processo seletivo";
+        modelAndView.addObject("cardHeader", cardHeader);
+        return modelAndView;
+    }
+
+    @GetMapping("/candidates")
+    public ModelAndView candidates(ModelAndView modelAndView){
+        modelAndView.setViewName("candidates-view");
+        cardHeader = "Os Candidatos inscritos no processo seletivo.";
+        modelAndView.addObject("cardHeader", cardHeader);
         return modelAndView;
     }
 
