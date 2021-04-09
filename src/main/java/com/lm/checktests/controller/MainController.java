@@ -29,7 +29,35 @@ public class MainController {
     @GetMapping("/")
     public ModelAndView index(ModelAndView modelAndView) {
         modelAndView.setViewName("index");
-        cardHeader = "Bem vindo(a) ao 'check-tests'";
+        cardHeader = "Bem vindo(a) ao 'check-tests'!";
+        modelAndView.addObject("cardHeader", cardHeader);
+        return modelAndView;
+    }
+
+    /**
+     * Selection model and view.
+     *
+     * @param modelAndView the model and view
+     * @return the model and view
+     */
+    @GetMapping("/selection")
+    public ModelAndView selection(ModelAndView modelAndView){
+        modelAndView.setViewName("selection-process-view");
+        cardHeader = "Dados do processo seletivo";
+        modelAndView.addObject("cardHeader", cardHeader);
+        return modelAndView;
+    }
+
+    /**
+     * Candidates model and view.
+     *
+     * @param modelAndView the model and view
+     * @return the model and view
+     */
+    @GetMapping("/candidates")
+    public ModelAndView candidates(ModelAndView modelAndView){
+        modelAndView.setViewName("candidates-view");
+        cardHeader = "Os Candidatos inscritos no processo seletivo";
         modelAndView.addObject("cardHeader", cardHeader);
         return modelAndView;
     }
@@ -44,14 +72,6 @@ public class MainController {
     public ModelAndView result(ModelAndView modelAndView){
         modelAndView.setViewName("result-view");
         cardHeader = "O resultado do processo seletivo";
-        modelAndView.addObject("cardHeader", cardHeader);
-        return modelAndView;
-    }
-
-    @GetMapping("/candidates")
-    public ModelAndView candidates(ModelAndView modelAndView){
-        modelAndView.setViewName("candidates-view");
-        cardHeader = "Os Candidatos inscritos no processo seletivo.";
         modelAndView.addObject("cardHeader", cardHeader);
         return modelAndView;
     }
