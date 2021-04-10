@@ -38,9 +38,24 @@ public class MainController {
     private boolean status = true;
 
     /**
+     * The Upload candidates.
+     */
+    private boolean uploadCandidates;
+
+    /**
      * The Upload correct answers.
      */
     private boolean uploadCorrectAnswers;
+
+    /**
+     * The Upload candidates.
+     */
+    private boolean uploadCandidatesAnswers;
+
+    /**
+     * The Students.
+     */
+    private List<Student> students = new ArrayList<>();
 
     /**
      * The Exam.
@@ -57,7 +72,15 @@ public class MainController {
     public ModelAndView index(ModelAndView modelAndView) {
         modelAndView.setViewName("index");
         cardHeader = "Bem vindo(a) ao 'check-tests'!";
+        setStatus(true);
         modelAndView.addObject("cardHeader", cardHeader);
+        modelAndView.addObject("students", students);
+        modelAndView.addObject("exam", exam);
+        modelAndView.addObject("status", isStatus());
+        modelAndView.addObject("uploadCandidates", isUploadCandidates());
+        modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
+        modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
+
         return modelAndView;
     }
 
@@ -115,13 +138,20 @@ public class MainController {
             model.addAttribute("message", message);
             return "selection-process-view";
         }
+        this.exam = exam;
         cardHeader = "Dados do processo seletivo";
         model.addAttribute("cardHeader", cardHeader);
         setStatus(true);
         setUploadCorrectAnswers(true);
         model.addAttribute("status", isStatus());
         model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
-        this.exam = exam;
+
+        model.addAttribute("cardHeader", cardHeader);
+        model.addAttribute("students", students);
+        model.addAttribute("exam", exam);
+        model.addAttribute("uploadCandidates", isUploadCandidates());
+        model.addAttribute("uploadCandidatesAnswers", isUploadCandidatesAnswers());
+
         return "index";
     }
 

@@ -34,9 +34,75 @@
             </ul>
         </div>
     </nav>
-    <div class="card">
-        <div class="card-header h6" th:text="${cardHeader}"></div>
+    <div>
+        <div class="alert alert-danger" role="alert" th:if="${!status}">
+            <strong>Error:</strong> <span th:text="${message}"></span>
+        </div>
     </div>
+
+    <div class="row">
+
+        <!-- Exam -->
+        <div class="col-sm">
+            <div class="col-sm">
+                <div class="card border-info" th:if="${!uploadCorrectAnswers}">
+                    <div class="card-header h6">Exame</div>
+                    <div class="card-body">
+                        <p><a class="badge badge-pill badge-warning" href="/selection" th:disabled="${!uploadCorrectAnswers}"
+                              title="Configurar o processo seletivo.">Configure</a>  o processo seletivo</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card text-white bg-success"
+                 th:if="${uploadCorrectAnswers}">
+                <div class="card-header h6">
+                    Exam: <span th:text="${exam.title}"></span></a>
+                </div>
+                <div class="card-body">
+                    <strong>Data: </strong> <span
+                        th:text="${#temporals.format(exam.dateOfExam,'dd-MM-yyyy')}"></span>
+                    <br> <strong>Quantidade de questões: </strong> <span
+                        th:text="${exam.numberOfQuestions}"></span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Candidates -->
+        <div class="col-sm">
+            <div class="card border-info mb-3" th:if="${!uploadCandidates}">
+                <div class="card-header h6">Candidatos</div>
+                <div class="card-body">
+                    <p><a class="badge badge-pill badge-warning" href="/candidates" th:disabled="${!uploadCorrectAnswers}"
+                          title="Arquivo .csv contendo a lista dos candidatos.">Importar</a> os
+                        candidatos inscritos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Candidates answers -->
+        <div class="col-sm">
+            <div class="card border-info mb-3" th:if="${!uploadCandidatesAnswers}">
+                <div class="card-header h6">Respostas</div>
+                <div class="card-body">
+                    <p><a class="badge badge-pill badge-warning" href="/result" th:disabled="${!uploadCandidates}"
+                          title="Arquivo .csv contendo as respostas dos candidatos.">Importar</a> as
+                        respostas dos candidatos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div align="center" class="py-3">
+        <form class="form" th:action="@{/view-result}">
+            <button class="btn btn-lg btn-success"
+                    disabled="${uploadCandidates && uploadCandidatesAnswers && uploadGabrito && !status}"
+                    type="submit">Processar dados
+            </button>
+        </form>
+    </div>
+</div>
 </div>
 </body>
 </html>
