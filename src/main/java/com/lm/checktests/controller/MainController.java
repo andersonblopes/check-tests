@@ -1,14 +1,23 @@
 package com.lm.checktests.controller;
 
+import com.lm.checktests.model.Exam;
+import com.lm.checktests.model.Student;
+import com.lm.checktests.util.Utils;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The type Main controller.
@@ -18,7 +27,25 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 public class MainController {
 
+    /**
+     * The Card header.
+     */
     private String cardHeader;
+
+    /**
+     * The Status.
+     */
+    private boolean status = true;
+
+    /**
+     * The Upload correct answers.
+     */
+    private boolean uploadCorrectAnswers;
+
+    /**
+     * The Exam.
+     */
+    private Exam exam;
 
     /**
      * Index model and view.
@@ -41,11 +68,61 @@ public class MainController {
      * @return the model and view
      */
     @GetMapping("/selection")
-    public ModelAndView selection(ModelAndView modelAndView){
-        modelAndView.setViewName("selection-process-view");
+    public ModelAndView selection(ModelAndView modelAndView) {
         cardHeader = "Dados do processo seletivo";
+        setStatus(true);
+        modelAndView.setViewName("selection-process-view");
         modelAndView.addObject("cardHeader", cardHeader);
+        modelAndView.addObject("exam", this.exam == null ? new Exam() : this.exam);
+        modelAndView.addObject("status", isStatus());
+        modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
         return modelAndView;
+    }
+
+    /**
+     * Register selection string.
+     *
+     * @param exam   the exam
+     * @param result the result
+     * @param model  the model
+     * @return the string
+     * @throws IOException the io exception
+     */
+    @PostMapping("/selection")
+    public String registerSelection(@Valid @ModelAttribute("exam") Exam exam, BindingResult result, Model model) throws IOException {
+
+        if (result.hasErrors()) {
+            cardHeader = "Dados do processo seletivo";
+            setStatus(true);
+            model.addAttribute("cardHeader", cardHeader);
+            model.addAttribute("status", isStatus());
+            model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
+            return "selection-process-view";
+        }
+
+        List<Character> answersFromFile = Utils.readTxt(exam);
+        if (answersFromFile.size() != exam.getNumberOfQuestions()) {
+            cardHeader = "Dados do processo seletivo";
+            model.addAttribute("cardHeader", cardHeader);
+            setStatus(false);
+            model.addAttribute("status", isStatus());
+            model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
+            String message = "<strong>Erro na quantidade de respostas no arquivo.</strong>" +
+                    "<br>" +
+                    "<strong>Quantidade experada:</strong> " + exam.getNumberOfQuestions() +
+                    "<br>" +
+                    "<strong>Quantidade no arquivo:</strong> " + answersFromFile.size();
+            model.addAttribute("message", message);
+            return "selection-process-view";
+        }
+        cardHeader = "Dados do processo seletivo";
+        model.addAttribute("cardHeader", cardHeader);
+        setStatus(true);
+        setUploadCorrectAnswers(true);
+        model.addAttribute("status", isStatus());
+        model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
+        this.exam = exam;
+        return "index";
     }
 
     /**
@@ -55,7 +132,7 @@ public class MainController {
      * @return the model and view
      */
     @GetMapping("/candidates")
-    public ModelAndView candidates(ModelAndView modelAndView){
+    public ModelAndView candidates(ModelAndView modelAndView) {
         modelAndView.setViewName("candidates-view");
         cardHeader = "Os Candidatos inscritos no processo seletivo";
         modelAndView.addObject("cardHeader", cardHeader);
@@ -69,7 +146,7 @@ public class MainController {
      * @return the model and view
      */
     @GetMapping("/result")
-    public ModelAndView result(ModelAndView modelAndView){
+    public ModelAndView result(ModelAndView modelAndView) {
         modelAndView.setViewName("result-view");
         cardHeader = "O resultado do processo seletivo";
         modelAndView.addObject("cardHeader", cardHeader);

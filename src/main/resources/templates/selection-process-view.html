@@ -35,7 +35,85 @@
     </nav>
     <div class="card">
         <div class="card-header h6" th:text="${cardHeader}"></div>
+        <div class="card-body" th:if="${!status}">
+            <div class="alert alert-danger" role="alert">
+                <span th:utext="${message}"></span>
+            </div>
+        </div>
     </div>
+    <div>
+        <div class="m-2 alert alert-success alert-dismissible fade show" role="alert" th:if="${!!uploadCorrectAnswers}">
+            <span th:utext="${exam.getTitle().concat(' já cadastrado!')}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form action="#" enctype="multipart/form-data" method="post" class="m-2"
+              modelAttribute="exam" th:action="@{/selection}">
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="exam-title">Título</label> <input class="form-control"
+                                                                  id="exam-title"
+                                                                  placeholder="Descrição do processo seletivo"
+                                                                  th:field="*{exam.title}"
+                                                                  th:readonly="${uploadCorrectAnswers}"
+                                                                  type="text"/>
+                    <span
+                            class="text-danger"
+                            th:errors="*{exam.title}" th:if="${#fields.hasErrors('exam.title')}"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="date-of-exam">Data da avaliação</label> <input class="form-control"
+                                                                               id="date-of-exam" th:field="*{exam.dateOfExam}"
+                                                                               th:readonly="${uploadCorrectAnswers}"
+                                                                               type="date"/> <span
+                        class="text-danger"
+                        th:errors="*{exam.dateOfExam}" th:if="${#fields.hasErrors('exam.dateOfExam')}"></span>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="exam-amount-questions">Nº de Questões</label> <input
+                        class="form-control"
+                        id="exam-amount-questions" th:field="*{exam.numberOfQuestions}" th:readonly="${uploadCorrectAnswers}"
+                        type="number"/> <span
+                        class="text-danger"
+                        th:errors="*{exam.numberOfQuestions}"
+                        th:if="${#fields.hasErrors('exam.numberOfQuestions')}"></span>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="exam-amount-questions">Vagas</label> <input class="form-control"
+                                                                            id="exam-amount-approved"
+                                                                            th:field="*{exam.numberOfApproved}"
+                                                                            th:readonly="${uploadCorrectAnswers}"
+                                                                            type="number"/> <span
+                        class="text-danger"
+                        th:errors="*{exam.numberOfApproved}"
+                        th:if="${#fields.hasErrors('exam.numberOfApproved')}"></span>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="exam-amount-questions">Lista de espera</label> <input
+                        class="form-control"
+                        id="exam-amount-queue" th:field="*{exam.numberWaitQueue}" th:readonly="${uploadCorrectAnswers}"
+                        type="number"/> <span
+                        class="text-danger"
+                        th:errors="*{exam.numberWaitQueue}" th:if="${#fields.hasErrors('exam.numberWaitQueue')}"></span>
+                </div>
+
+                <div class="form-group md-6" th:if="${!uploadCorrectAnswers}">
+                    <label for="exam-csv-input">Arquivo com o gabarito</label>
+                    <input accept=".txt" class="form-control-file" id="exam-csv-input"
+                           name="fileUploaded" th:disabled="${uploadCorrectAnswers}"
+                           th:readonly="${uploadCorrectAnswers}" type="file">
+                </div>
+            </div>
+
+            <button class="btn btn-primary float-right" th:disabled="${uploadCorrectAnswers}"
+                    title="Cadastrar processo seletivo" type="submit">Cadastrar
+            </button>
+        </form>
+    </div>
+</div>
 </div>
 
 </body>
