@@ -149,7 +149,6 @@ public class MainController {
     public ModelAndView registerSelection(@Valid @ModelAttribute("exam") Exam exam, BindingResult result, ModelAndView modelAndView) throws IOException {
 
         StringBuilder message = new StringBuilder("");
-        List<Character> answersFromFile = new ArrayList<>();
         modelAndView.setViewName("selection-process-view");
         cardHeader = "Dados do processo seletivo";
         modelAndView.addObject("cardHeader", cardHeader);
@@ -171,16 +170,16 @@ public class MainController {
             message.append("<br>");
         }
 
-        answersFromFile = mainService.extractAnswersFromFile(exam);
+        exam = mainService.extractAnswersFromFile(exam);
 
-        if (exam.getNumberOfQuestions() != null && answersFromFile.size() != exam.getNumberOfQuestions()) {
+        if (exam.getNumberOfQuestions() != null && exam.getAnswers() != null && exam.getAnswers().size() != exam.getNumberOfQuestions()) {
             setStatusErrors(true);
             setUploadCorrectAnswers(false);
             message.append("<strong>Erro na quantidade de respostas no arquivo.</strong>");
             message.append("<br>");
             message.append("<strong>Quantidade experada: </strong> " + exam.getNumberOfQuestions());
             message.append("<br>");
-            message.append("<strong>Quantidade no arquivo: </strong> " + answersFromFile.size());
+            message.append("<strong>Quantidade no arquivo: </strong> " + exam.getAnswers().size());
             message.append("<br>");
         }
 

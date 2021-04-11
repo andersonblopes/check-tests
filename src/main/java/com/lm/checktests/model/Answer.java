@@ -21,10 +21,10 @@ public class Answer {
     /**
      * The Question number.
      */
-    private String questionNumber;
+    private Integer questionNumber;
 
     /**
      * The Question answer.
      */
-    private String questionAnswer;
+    private Character questionAnswer;
 }

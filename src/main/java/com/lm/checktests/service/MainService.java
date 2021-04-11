@@ -1,5 +1,6 @@
 package com.lm.checktests.service;
 
+import com.lm.checktests.model.Answer;
 import com.lm.checktests.model.Exam;
 import com.lm.checktests.model.Student;
 import com.opencsv.bean.CsvToBean;
@@ -30,20 +31,25 @@ public class MainService {
      * @return the list
      * @throws IOException the io exception
      */
-    public List<Character> extractAnswersFromFile(Exam exam) throws IOException {
+    public Exam extractAnswersFromFile(Exam exam) throws IOException {
         File tempFile = new File(System.getProperty("java.io.tmpdir") + "/" + exam.getFileUploaded().getName() + "_" + RandomStringUtils.randomAlphabetic(10));
         exam.getFileUploaded().transferTo(tempFile);
 
         BufferedReader br = new BufferedReader(new FileReader(tempFile));
 
         int readIndex;
-        List<Character> answersFromFile = new ArrayList<>();
+        List<Answer> answersFromFile = new ArrayList<>();
         while ((readIndex = br.read()) != -1) {
             char ch = (char) readIndex;
-            answersFromFile.add(ch);
+            Answer answer = new Answer();
+            answer.setQuestionNumber(answersFromFile.size() + 1);
+            answer.setQuestionAnswer(ch);
+            answersFromFile.add(answer);
         }
 
-        return answersFromFile;
+        exam.setAnswers(answersFromFile);
+
+        return exam;
     }
 
     /**
