@@ -107,7 +107,7 @@ public class MainController {
         setUploadCandidates(false);
         setUploadCorrectAnswers(false);
         setUploadCandidatesAnswers(false);
-        exam = new Exam();
+        exam = null;
         modelAndView.addObject("students", students);
         modelAndView.addObject("exam", exam);
         modelAndView.addObject("statusErrors", isStatusErrors());
@@ -139,66 +139,58 @@ public class MainController {
     /**
      * Register selection string.
      *
-     * @param exam   the exam
-     * @param result the result
-     * @param model  the model
+     * @param exam         the exam
+     * @param result       the result
+     * @param modelAndView the model and view
      * @return the string
      * @throws IOException the io exception
      */
     @PostMapping("/selection")
-    public String registerSelection(@Valid @ModelAttribute("exam") Exam exam, BindingResult result, Model model) throws IOException {
+    public ModelAndView registerSelection(@Valid @ModelAttribute("exam") Exam exam, BindingResult result, ModelAndView modelAndView) throws IOException {
+
+        StringBuilder message = new StringBuilder("");
+        List<Character> answersFromFile = new ArrayList<>();
+        modelAndView.setViewName("selection-process-view");
+        cardHeader = "Dados do processo seletivo";
+        modelAndView.addObject("cardHeader", cardHeader);
+        setStatusErrors(false);
+        setUploadCorrectAnswers(true);
 
         if (result.hasErrors()) {
-            cardHeader = "Dados do processo seletivo";
             setStatusErrors(true);
-            model.addAttribute("cardHeader", cardHeader);
-            model.addAttribute("statusErrors", isStatusErrors());
-            model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
-            return "selection-process-view";
+            setUploadCorrectAnswers(false);
+            message.append("<strong>Campos obrigatórios devem ser preenchidos.</strong>");
         }
 
         if(!mainService.validateFile(exam.getFileUploaded(), Constants.FILE_TEXT_EXTENSION)){
-            cardHeader = "Dados do processo seletivo";
-            model.addAttribute("cardHeader", cardHeader);
             setStatusErrors(true);
-            model.addAttribute("statusErrors", isStatusErrors());
-            model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
-            String message = "<strong>Falha na importação do arquivo</strong>" +
-                    "<br>" +
-                    "O arquivo não pode ser vazio ou diferente do formato 'txt'";
-            model.addAttribute("message", message);
-            return "selection-process-view";
+            setUploadCorrectAnswers(false);
+            message.append("<strong>Falha na importação do arquivo</strong>");
+            message.append("<br>");
+            message.append("O arquivo não pode ser vazio ou diferente do formato 'txt'");
+            message.append("<br>");
         }
 
-        List<Character> answersFromFile = mainService.extractAnswersFromFile(exam);
-        if (answersFromFile.size() != exam.getNumberOfQuestions()) {
-            cardHeader = "Dados do processo seletivo";
-            model.addAttribute("cardHeader", cardHeader);
+        answersFromFile = mainService.extractAnswersFromFile(exam);
+
+        if (exam.getNumberOfQuestions() != null && answersFromFile.size() != exam.getNumberOfQuestions()) {
             setStatusErrors(true);
-            model.addAttribute("statusErrors", isStatusErrors());
-            model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
-            String message = "<strong>Erro na quantidade de respostas no arquivo.</strong>" +
-                    "<br>" +
-                    "<strong>Quantidade experada:</strong> " + exam.getNumberOfQuestions() +
-                    "<br>" +
-                    "<strong>Quantidade no arquivo:</strong> " + answersFromFile.size();
-            model.addAttribute("message", message);
-            return "selection-process-view";
+            setUploadCorrectAnswers(false);
+            message.append("<strong>Erro na quantidade de respostas no arquivo.</strong>");
+            message.append("<br>");
+            message.append("<strong>Quantidade experada: </strong> " + exam.getNumberOfQuestions());
+            message.append("<br>");
+            message.append("<strong>Quantidade no arquivo: </strong> " + answersFromFile.size());
+            message.append("<br>");
         }
+
         this.exam = exam;
-        cardHeader = "Dados do processo seletivo";
-        model.addAttribute("cardHeader", cardHeader);
-        setStatusErrors(false);
-        setUploadCorrectAnswers(true);
-        model.addAttribute("statusErrors", isStatusErrors());
-        model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
-        model.addAttribute("cardHeader", cardHeader);
-        model.addAttribute("students", students);
-        model.addAttribute("exam", exam);
-        model.addAttribute("uploadCandidates", isUploadCandidates());
-        model.addAttribute("uploadCandidatesAnswers", isUploadCandidatesAnswers());
+        modelAndView.addObject("message", message);
+        modelAndView.addObject("statusErrors", isStatusErrors());
+        modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
+        modelAndView.addObject("exam", exam);
 
-        return "index";
+        return modelAndView;
     }
 
     /**
@@ -214,6 +206,7 @@ public class MainController {
         modelAndView.addObject("cardHeader", cardHeader);
         modelAndView.addObject("statusErrors", isStatusErrors());
         modelAndView.addObject("uploadCandidates", isUploadCandidates());
+        modelAndView.addObject("students", students);
         return modelAndView;
     }
 
@@ -229,6 +222,7 @@ public class MainController {
 
         modelAndView.setViewName("candidates-view");
         cardHeader = "Os Candidatos inscritos no processo seletivo";
+        modelAndView.addObject("cardHeader", cardHeader);
         String message = "";
         setStatusErrors(false);
         setUploadCandidates(true);
@@ -240,12 +234,29 @@ public class MainController {
                     "<br>" +
                     "O arquivo não pode ser vazio ou diferente do formato 'csv'";
 
+        }else{
+
+            try {
+
+                this.students = mainService.parseStudentsFromFile(file);
+
+                setStatusErrors(false);
+                setUploadCandidates(true);
+                modelAndView.addObject("students", students);
+
+            } catch (Exception ex) {
+
+                message = "Ocorreu um erro durante o processamento do arquivo CSV.";
+                modelAndView.addObject("message", message);
+                setStatusErrors(true);
+                modelAndView.addObject("statusErrors", isStatusErrors());
+            }
         }
 
-        modelAndView.addObject("cardHeader", cardHeader);
         modelAndView.addObject("statusErrors", isStatusErrors());
         modelAndView.addObject("uploadCandidates", isUploadCandidates());
         modelAndView.addObject("message", message);
+
         return modelAndView;
     }
 
