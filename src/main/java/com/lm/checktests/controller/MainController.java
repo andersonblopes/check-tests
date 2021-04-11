@@ -56,6 +56,11 @@ public class MainController {
     private boolean uploadCandidatesAnswers;
 
     /**
+     * The Process done.
+     */
+    private boolean processDone;
+
+    /**
      * The Students.
      */
     private List<Student> students = new ArrayList<>();
@@ -89,6 +94,7 @@ public class MainController {
         modelAndView.addObject("uploadCandidates", isUploadCandidates());
         modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
         modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
+        modelAndView.addObject("processDone", isProcessDone());
 
         return modelAndView;
     }
@@ -114,6 +120,7 @@ public class MainController {
         modelAndView.addObject("uploadCandidates", isUploadCandidates());
         modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
         modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
+        modelAndView.addObject("processDone", isProcessDone());
 
         return modelAndView;
     }
@@ -267,16 +274,23 @@ public class MainController {
      */
     @GetMapping("/candidates-answers")
     public ModelAndView result(ModelAndView modelAndView) {
-        modelAndView.setViewName("result-view");
+        modelAndView.setViewName("candidates-answers-view");
         cardHeader = "Resultado do processo seletivo";
         modelAndView.addObject("cardHeader", cardHeader);
         modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
         return modelAndView;
     }
 
+    /**
+     * Process result model and view.
+     *
+     * @param file         the file
+     * @param modelAndView the model and view
+     * @return the model and view
+     */
     @PostMapping("/candidates-answers")
     public ModelAndView processResult(@RequestParam("file") MultipartFile file, ModelAndView modelAndView) {
-        modelAndView.setViewName("result-view");
+        modelAndView.setViewName("candidates-answers-view");
         cardHeader = "Resultado do processo seletivo";
         modelAndView.addObject("cardHeader", cardHeader);
         String message = "";

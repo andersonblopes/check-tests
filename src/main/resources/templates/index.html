@@ -25,11 +25,13 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="/selection">Concurso</a>
+                <li th:if="${uploadCorrectAnswers}" class="nav-item"><a class="nav-link" href="/selection">Concurso</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/candidates">Candidatos</a>
+                <li th:if="${uploadCandidates}" lass="nav-item"><a class="nav-link" href="/candidates">Candidatos</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/candidates-answers">Apuração</a>
+                <li th:if="${uploadCandidatesAnswers}" class="nav-item"><a class="nav-link" href="/candidates-answers">Apuração</a>
+                </li>
+                <li th:if="${processDone}" class="nav-item"><a class="nav-link" href="/result">Resultado</a>
                 </li>
             </ul>
         </div>
@@ -99,9 +101,17 @@
             <div class="card border-info mb-3" th:if="${!uploadCandidatesAnswers}">
                 <div class="card-header h6">Apuração</div>
                 <div class="card-body">
-                    <p><a class="badge badge-pill badge-warning" href="/result" th:disabled="${!uploadCandidates}"
+                    <p><a class="badge badge-pill badge-warning" href="/candidates-answers" th:disabled="${!uploadCandidates}"
                           title="Arquivo .csv contendo as respostas dos candidatos.">Importar</a> as
                         respostas dos candidatos.</p>
+                </div>
+            </div>
+
+            <div th:if="${uploadCandidatesAnswers}"
+                 class="card text-white bg-success mb-3">
+                <div class="card-header h6">Apuração</div>
+                <div class="card-body">
+                    <span>Relação de candidatos que <strong>realizaram o concurso</strong> já incluídos no Sistema.</span></a>
                 </div>
             </div>
         </div>
