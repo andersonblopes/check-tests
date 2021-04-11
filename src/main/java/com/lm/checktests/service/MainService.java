@@ -1,7 +1,8 @@
-package com.lm.checktests.util;
+package com.lm.checktests.service;
 
 import com.lm.checktests.model.Exam;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -12,29 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The type Utils.
+ * The type Main service.
  */
-public class Utils {
+@Service
+public class MainService {
 
     /**
-     * Validate file boolean.
-     *
-     * @param file the file
-     * @return the boolean
-     */
-    public static boolean validateFile(MultipartFile file) {
-        return !file.isEmpty();
-    }
-
-    /**
-     * Read txt list.
+     * Extract answers from file list.
      *
      * @param exam the exam
      * @return the list
      * @throws IOException the io exception
      */
-    public static List<Character> readTxt(Exam exam) throws IOException {
-
+    public List<Character> extractAnswersFromFile(Exam exam) throws IOException {
         File tempFile = new File(System.getProperty("java.io.tmpdir") + "/" + exam.getFileUploaded().getName() + "_" + RandomStringUtils.randomAlphabetic(10));
         exam.getFileUploaded().transferTo(tempFile);
 
@@ -48,5 +39,29 @@ public class Utils {
         }
 
         return answersFromFile;
+    }
+
+    /**
+     * Validate file boolean.
+     *
+     * @param file      the file
+     * @param extension the extension
+     * @return the boolean
+     */
+    public boolean validateFile(MultipartFile file, String extension) {
+        return !file.isEmpty() && getFileExtension(file.getOriginalFilename()).equalsIgnoreCase(extension);
+    }
+
+    /**
+     * Gets file extension.
+     *
+     * @param filename the filename
+     * @return the file extension
+     */
+    private String getFileExtension(String filename) {
+        if (filename.contains("."))
+            return filename.substring(filename.lastIndexOf(".") + 1);
+        else
+            return "";
     }
 }

@@ -1,17 +1,18 @@
 package com.lm.checktests.controller;
 
+import com.lm.checktests.model.Constants;
 import com.lm.checktests.model.Exam;
 import com.lm.checktests.model.Student;
-import com.lm.checktests.util.Utils;
+import com.lm.checktests.service.MainService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -61,6 +62,12 @@ public class MainController {
      * The Exam.
      */
     private Exam exam;
+
+    /**
+     * The Main service.
+     */
+    @Autowired
+    private MainService mainService;
 
     /**
      * Index model and view.
@@ -123,7 +130,20 @@ public class MainController {
             return "selection-process-view";
         }
 
-        List<Character> answersFromFile = Utils.readTxt(exam);
+        if(!mainService.validateFile(exam.getFileUploaded(), Constants.FILE_TEXT_EXTENSION)){
+            cardHeader = "Dados do processo seletivo";
+            model.addAttribute("cardHeader", cardHeader);
+            setStatus(false);
+            model.addAttribute("status", isStatus());
+            model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
+            String message = "<strong>Falha na importação do arquivo</strong>" +
+                    "<br>" +
+                    "O arquivo não pode ser vazio ou diferente do formato 'txt'";
+            model.addAttribute("message", message);
+            return "selection-process-view";
+        }
+
+        List<Character> answersFromFile = mainService.extractAnswersFromFile(exam);
         if (answersFromFile.size() != exam.getNumberOfQuestions()) {
             cardHeader = "Dados do processo seletivo";
             model.addAttribute("cardHeader", cardHeader);
