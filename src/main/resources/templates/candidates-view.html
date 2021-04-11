@@ -28,7 +28,7 @@
                 </li>
                 <li class="nav-item"><a class="nav-link" href="/candidates">Candidatos</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/result">Resultado</a>
+                <li class="nav-item"><a class="nav-link" href="/candidates-answers">Apuração</a>
                 </li>
             </ul>
         </div>
@@ -75,8 +75,6 @@
                 <th scope="col">OBM</th>
                 <th scope="col">e-mail</th>
                 <th scope="col">Telefone</th>
-                <th class="text-center" scope="col">N1</th>
-                <th class="text-center" scope="col">N2</th>
                 <th class="text-center" scope="col">Situação</th>
             </tr>
             </thead>
@@ -90,8 +88,6 @@
                 <td th:text="${student.obm}"></td>
                 <td th:text="${student.email}"></td>
                 <td th:text="${student.telefone}"></td>
-                <td class="text-center" th:text="${student.nota}"></td>
-                <td class="text-center" th:text="${student.nota2}"></td>
                 <td class="text-center" th:text="${student.situacao}"></td>
             </tr>
             </tbody>

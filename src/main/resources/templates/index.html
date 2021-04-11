@@ -29,7 +29,7 @@
                 </li>
                 <li class="nav-item"><a class="nav-link" href="/candidates">Candidatos</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/result">Resultado</a>
+                <li class="nav-item"><a class="nav-link" href="/candidates-answers">Apuração</a>
                 </li>
             </ul>
         </div>
@@ -49,7 +49,7 @@
         <div class="col-sm">
             <div class="col-sm">
                 <div class="card border-info" th:if="${!uploadCorrectAnswers}">
-                    <div class="card-header h6">Exame</div>
+                    <div class="card-header h6">Concurso</div>
                     <div class="card-body">
                         <p><a class="badge badge-pill badge-warning" href="/selection" th:disabled="${!uploadCorrectAnswers}"
                               title="Configurar o processo seletivo.">Configure</a>  o processo seletivo</p>
@@ -97,7 +97,7 @@
         <!-- Candidates answers -->
         <div class="col-sm">
             <div class="card border-info mb-3" th:if="${!uploadCandidatesAnswers}">
-                <div class="card-header h6">Respostas</div>
+                <div class="card-header h6">Apuração</div>
                 <div class="card-body">
                     <p><a class="badge badge-pill badge-warning" href="/result" th:disabled="${!uploadCandidates}"
                           title="Arquivo .csv contendo as respostas dos candidatos.">Importar</a> as

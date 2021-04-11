@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +148,7 @@ public class MainController {
     @PostMapping("/selection")
     public ModelAndView registerSelection(@Valid @ModelAttribute("exam") Exam exam, BindingResult result, ModelAndView modelAndView) throws IOException {
 
-        StringBuilder message = new StringBuilder("");
+        StringBuilder message = new StringBuilder();
         modelAndView.setViewName("selection-process-view");
         cardHeader = "Dados do processo seletivo";
         modelAndView.addObject("cardHeader", cardHeader);
@@ -161,7 +161,7 @@ public class MainController {
             message.append("<strong>Campos obrigatórios devem ser preenchidos.</strong>");
         }
 
-        if(!mainService.validateFile(exam.getFileUploaded(), Constants.FILE_TEXT_EXTENSION)){
+        if (!mainService.validateFile(exam.getFileUploaded(), Constants.FILE_TEXT_EXTENSION)) {
             setStatusErrors(true);
             setUploadCorrectAnswers(false);
             message.append("<strong>Falha na importação do arquivo</strong>");
@@ -226,14 +226,14 @@ public class MainController {
         setStatusErrors(false);
         setUploadCandidates(true);
 
-        if(!mainService.validateFile(file, Constants.FILE_CSV_EXTENSION)){
+        if (!mainService.validateFile(file, Constants.FILE_CSV_EXTENSION)) {
             setStatusErrors(true);
             setUploadCandidates(false);
             message = "<strong>Falha na importação do arquivo</strong>" +
                     "<br>" +
                     "O arquivo não pode ser vazio ou diferente do formato 'csv'";
 
-        }else{
+        } else {
 
             try {
 
@@ -265,11 +265,49 @@ public class MainController {
      * @param modelAndView the model and view
      * @return the model and view
      */
-    @GetMapping("/result")
+    @GetMapping("/candidates-answers")
     public ModelAndView result(ModelAndView modelAndView) {
         modelAndView.setViewName("result-view");
-        cardHeader = "O resultado do processo seletivo";
+        cardHeader = "Resultado do processo seletivo";
         modelAndView.addObject("cardHeader", cardHeader);
+        modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
+        return modelAndView;
+    }
+
+    @PostMapping("/candidates-answers")
+    public ModelAndView processResult(@RequestParam("file") MultipartFile file, ModelAndView modelAndView) {
+        modelAndView.setViewName("result-view");
+        cardHeader = "Resultado do processo seletivo";
+        modelAndView.addObject("cardHeader", cardHeader);
+        String message = "";
+        setUploadCandidatesAnswers(true);
+        setStatusErrors(false);
+
+        if (!mainService.validateFile(file, Constants.FILE_TEXT_EXTENSION)) {
+            setStatusErrors(true);
+            setUploadCandidatesAnswers(false);
+            message = "<strong>Falha na importação do arquivo</strong>" +
+                    "<br>" +
+                    "O arquivo não pode ser vazio ou diferente do formato 'txt'";
+        }else{
+            try {
+
+                mainService.extractStudentAnswersFromFile(file);
+
+            } catch (FileNotFoundException e) {
+                message = "Ocorreu um erro durante o processamento do arquivo TXT.";
+                modelAndView.addObject("message", message);
+                setStatusErrors(true);
+                modelAndView.addObject("statusErrors", isStatusErrors());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
+        modelAndView.addObject("statusErrors", isStatusErrors());
+        modelAndView.addObject("message", message);
         return modelAndView;
     }
 

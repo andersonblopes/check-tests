@@ -28,15 +28,38 @@
                 </li>
                 <li class="nav-item"><a class="nav-link" href="/candidates">Candidatos</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/result">Resultado</a>
+                <li class="nav-item"><a class="nav-link" href="/candidates-answers">Apuração</a>
                 </li>
             </ul>
         </div>
     </nav>
     <div class="card">
         <div class="card-header h6" th:text="${cardHeader}"></div>
+        <div class="card-body" th:if="${statusErrors}">
+            <div class="alert alert-danger" role="alert">
+                <span th:utext="${message}"></span>
+            </div>
+        </div>
+        <div class="col-sm">
+
+            <div class="card border-info m-2" th:if="${!uploadCandidatesAnswers}">
+                <div class="card-body">
+                    <p class="card-text text-justify">Importe as respostas dos candidatos
+                        que participaram do processo.</p>
+                    <form class="form-inline" enctype="multipart/form-data" method="POST"
+                          th:action="@{/candidates-answers}">
+                        <div class="form-group mx-sm-3 mb-2">
+                            <input accept=".txt" class="form-control-file smaller-input"
+                                   id="file" name="file" type="file">
+                        </div>
+                        <button class="btn btn-primary float-right"
+                                type="submit">Importar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
 </body>
 </html>
