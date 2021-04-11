@@ -79,6 +79,16 @@
                         candidatos inscritos.</p>
                 </div>
             </div>
+
+            <div th:if="${uploadCandidates}"
+                 class="card text-white bg-success mb-3">
+                <div class="card-header h6">Candidatos</div>
+                <div class="card-body">
+                    <a style="text-decoration: none; color: inherit;"
+                       href="/candidates"><strong th:text="${students.size}"></strong>
+                        <span> Candidatos inscritos no proceso seletivo.</span></a>
+                </div>
+            </div>
         </div>
 
         <!-- Candidates answers -->
@@ -94,15 +104,14 @@
         </div>
     </div>
 
-    <div align="center" class="py-3">
+    <div class="py-3 text-center">
         <form class="form" th:action="@{/view-result}">
             <button class="btn btn-lg btn-success"
-                    disabled="${uploadCandidates && uploadCandidatesAnswers && uploadGabrito && !status}"
+                    th:disabled="${uploadCandidates || uploadCandidatesAnswers || uploadCorrectAnswers || !status}"
                     type="submit">Processar dados
             </button>
         </form>
     </div>
-</div>
 </div>
 </body>
 </html>

@@ -13,6 +13,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -186,7 +188,40 @@ public class MainController {
         modelAndView.setViewName("candidates-view");
         cardHeader = "Os Candidatos inscritos no processo seletivo";
         modelAndView.addObject("cardHeader", cardHeader);
+        modelAndView.addObject("status", isStatus());
         modelAndView.addObject("uploadCandidates", isUploadCandidates());
+        return modelAndView;
+    }
+
+    /**
+     * Upload candidates model and view.
+     *
+     * @param file         the file
+     * @param modelAndView the model and view
+     * @return the model and view
+     */
+    @PostMapping("/candidates")
+    public ModelAndView uploadCandidates(@RequestParam("file") MultipartFile file, ModelAndView modelAndView) {
+
+        modelAndView.setViewName("candidates-view");
+        cardHeader = "Os Candidatos inscritos no processo seletivo";
+        String message = "";
+        setStatus(true);
+        setUploadCandidates(true);
+
+        if(!mainService.validateFile(file, Constants.FILE_CSV_EXTENSION)){
+            setStatus(false);
+            setUploadCandidates(false);
+            message = "<strong>Falha na importação do arquivo</strong>" +
+                    "<br>" +
+                    "O arquivo não pode ser vazio ou diferente do formato 'csv'";
+
+        }
+
+        modelAndView.addObject("cardHeader", cardHeader);
+        modelAndView.addObject("status", isStatus());
+        modelAndView.addObject("uploadCandidates", isUploadCandidates());
+        modelAndView.addObject("message", message);
         return modelAndView;
     }
 
