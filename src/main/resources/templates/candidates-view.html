@@ -35,6 +35,25 @@
     </nav>
     <div class="card">
         <div class="card-header h6" th:text="${cardHeader}"></div>
+        <div class="col-sm">
+
+            <div class="card border-info m-2" th:if="${!uploadCandidates}">
+                <div class="card-body">
+                    <p class="card-text text-justify">Importe os candidatos
+                        que participarão do processo.</p>
+                    <form class="form-inline" enctype="multipart/form-data" method="POST"
+                          th:action="@{/upload-candidates}">
+                        <div class="form-group mx-sm-3 mb-2">
+                            <input accept=".csv" class="form-control-file smaller-input"
+                                   id="file" name="file" type="file">
+                        </div>
+                        <button class="btn btn-primary float-right"
+                                type="submit">Importar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

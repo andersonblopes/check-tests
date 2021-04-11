@@ -186,6 +186,7 @@ public class MainController {
         modelAndView.setViewName("candidates-view");
         cardHeader = "Os Candidatos inscritos no processo seletivo";
         modelAndView.addObject("cardHeader", cardHeader);
+        modelAndView.addObject("uploadCandidates", isUploadCandidates());
         return modelAndView;
     }
 
