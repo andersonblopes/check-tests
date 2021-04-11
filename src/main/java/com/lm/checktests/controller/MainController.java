@@ -36,9 +36,9 @@ public class MainController {
     private String cardHeader;
 
     /**
-     * The Status.
+     * The Status errors.
      */
-    private boolean status = true;
+    private boolean statusErrors;
 
     /**
      * The Upload candidates.
@@ -81,11 +81,36 @@ public class MainController {
     public ModelAndView index(ModelAndView modelAndView) {
         modelAndView.setViewName("index");
         cardHeader = "Bem vindo(a) ao 'check-tests'!";
-        setStatus(true);
+        setStatusErrors(false);
         modelAndView.addObject("cardHeader", cardHeader);
         modelAndView.addObject("students", students);
         modelAndView.addObject("exam", exam);
-        modelAndView.addObject("status", isStatus());
+        modelAndView.addObject("statusErrors", isStatusErrors());
+        modelAndView.addObject("uploadCandidates", isUploadCandidates());
+        modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
+        modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
+
+        return modelAndView;
+    }
+
+    /**
+     * Restart model and view.
+     *
+     * @param modelAndView the model and view
+     * @return the model and view
+     */
+    @GetMapping("/restart")
+    public ModelAndView restart(ModelAndView modelAndView) {
+        modelAndView.setViewName("index");
+        setStatusErrors(false);
+        students = new ArrayList<>();
+        setUploadCandidates(false);
+        setUploadCorrectAnswers(false);
+        setUploadCandidatesAnswers(false);
+        exam = new Exam();
+        modelAndView.addObject("students", students);
+        modelAndView.addObject("exam", exam);
+        modelAndView.addObject("statusErrors", isStatusErrors());
         modelAndView.addObject("uploadCandidates", isUploadCandidates());
         modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
         modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
@@ -102,11 +127,11 @@ public class MainController {
     @GetMapping("/selection")
     public ModelAndView selection(ModelAndView modelAndView) {
         cardHeader = "Dados do processo seletivo";
-        setStatus(true);
+        setStatusErrors(false);
         modelAndView.setViewName("selection-process-view");
         modelAndView.addObject("cardHeader", cardHeader);
         modelAndView.addObject("exam", this.exam == null ? new Exam() : this.exam);
-        modelAndView.addObject("status", isStatus());
+        modelAndView.addObject("statusErrors", isStatusErrors());
         modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
         return modelAndView;
     }
@@ -125,9 +150,9 @@ public class MainController {
 
         if (result.hasErrors()) {
             cardHeader = "Dados do processo seletivo";
-            setStatus(true);
+            setStatusErrors(true);
             model.addAttribute("cardHeader", cardHeader);
-            model.addAttribute("status", isStatus());
+            model.addAttribute("statusErrors", isStatusErrors());
             model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
             return "selection-process-view";
         }
@@ -135,8 +160,8 @@ public class MainController {
         if(!mainService.validateFile(exam.getFileUploaded(), Constants.FILE_TEXT_EXTENSION)){
             cardHeader = "Dados do processo seletivo";
             model.addAttribute("cardHeader", cardHeader);
-            setStatus(false);
-            model.addAttribute("status", isStatus());
+            setStatusErrors(true);
+            model.addAttribute("statusErrors", isStatusErrors());
             model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
             String message = "<strong>Falha na importação do arquivo</strong>" +
                     "<br>" +
@@ -149,8 +174,8 @@ public class MainController {
         if (answersFromFile.size() != exam.getNumberOfQuestions()) {
             cardHeader = "Dados do processo seletivo";
             model.addAttribute("cardHeader", cardHeader);
-            setStatus(false);
-            model.addAttribute("status", isStatus());
+            setStatusErrors(true);
+            model.addAttribute("statusErrors", isStatusErrors());
             model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
             String message = "<strong>Erro na quantidade de respostas no arquivo.</strong>" +
                     "<br>" +
@@ -163,11 +188,10 @@ public class MainController {
         this.exam = exam;
         cardHeader = "Dados do processo seletivo";
         model.addAttribute("cardHeader", cardHeader);
-        setStatus(true);
+        setStatusErrors(false);
         setUploadCorrectAnswers(true);
-        model.addAttribute("status", isStatus());
+        model.addAttribute("statusErrors", isStatusErrors());
         model.addAttribute("uploadCorrectAnswers", isUploadCorrectAnswers());
-
         model.addAttribute("cardHeader", cardHeader);
         model.addAttribute("students", students);
         model.addAttribute("exam", exam);
@@ -188,7 +212,7 @@ public class MainController {
         modelAndView.setViewName("candidates-view");
         cardHeader = "Os Candidatos inscritos no processo seletivo";
         modelAndView.addObject("cardHeader", cardHeader);
-        modelAndView.addObject("status", isStatus());
+        modelAndView.addObject("statusErrors", isStatusErrors());
         modelAndView.addObject("uploadCandidates", isUploadCandidates());
         return modelAndView;
     }
@@ -206,11 +230,11 @@ public class MainController {
         modelAndView.setViewName("candidates-view");
         cardHeader = "Os Candidatos inscritos no processo seletivo";
         String message = "";
-        setStatus(true);
+        setStatusErrors(false);
         setUploadCandidates(true);
 
         if(!mainService.validateFile(file, Constants.FILE_CSV_EXTENSION)){
-            setStatus(false);
+            setStatusErrors(true);
             setUploadCandidates(false);
             message = "<strong>Falha na importação do arquivo</strong>" +
                     "<br>" +
@@ -219,7 +243,7 @@ public class MainController {
         }
 
         modelAndView.addObject("cardHeader", cardHeader);
-        modelAndView.addObject("status", isStatus());
+        modelAndView.addObject("statusErrors", isStatusErrors());
         modelAndView.addObject("uploadCandidates", isUploadCandidates());
         modelAndView.addObject("message", message);
         return modelAndView;
