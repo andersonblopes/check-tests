@@ -344,7 +344,7 @@ public class MainController {
 
         examResult = mainService.getExamResultFromList(inscription, examResultList);
 
-        cardHeader = "Detalhes da prova do candidato: " + examResult.getStudent().getNome();
+        cardHeader = "Detalhes da prova do candidato: " + examResult.getStudent().getInscricao();
 
         modelAndView = prepareModelAndView(modelAndView);
 

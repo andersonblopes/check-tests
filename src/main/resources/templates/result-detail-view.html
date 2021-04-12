@@ -35,6 +35,35 @@
     </nav>
     <div class="card">
         <div class="card-header h6" th:text="${cardHeader}"></div>
+
+        <div class="alert alert-info m-3" role="alert">
+            <div class="row">
+                <div class="col-11">
+                    <label>Nome</label>
+                    <h4 class="alert-heading" th:text="${examResult.getStudent.getNome()}">!</h4>
+                </div>
+                <div class="col-1">
+                    <label>Class.</label>
+                    <h4 class="alert-heading" th:text="${examResult.position} +'º'">!</h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <label>Matrícula</label>
+                    <h5 class="alert-heading" th:text="${examResult.getStudent().getMatricula()}">!</h5>
+                </div>
+                <div class="col-3">
+                    <label>Telefone</label>
+                    <h5 class="alert-heading" th:text="${examResult.getStudent().getTelefone()}">!</h5>
+                </div>
+                <div class="col-7">
+                    <label>e-mail</label>
+                    <h5 class="alert-heading" th:text="${examResult.getStudent().getEmail()}">!</h5>
+                </div>
+            </div>
+        </div>
+
         <div class="card-body" th:if="${statusErrors}">
             <div class="alert alert-danger" role="alert">
                 <span th:utext="${message}"></span>

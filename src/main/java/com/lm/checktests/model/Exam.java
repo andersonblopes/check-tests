@@ -11,6 +11,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,27 +31,28 @@ public class Exam {
     /**
      * The Title.
      */
-    @NotBlank(message = "Title is mandatory")
+    @NotBlank(message = "O título é obrigatório")
     private String title;
 
     /**
      * The Number of questions.
      */
-    @NotNull(message = "Number of questions is mandatory")
+    @NotNull(message = "Número de questões é obrigatório")
     @Positive
     private Integer numberOfQuestions;
 
     /**
      * The Number of approved.
      */
+    @NotNull(message = "Número de vagas é obrigatório")
     @Positive
     private Integer numberOfApproved;
 
     /**
      * The Number wait queue.
      */
-    @Positive
-    private Integer numberWaitQueue;
+    @PositiveOrZero
+    private Integer numberWaitQueue = 0;
 
     /**
      * The Date of exam.
