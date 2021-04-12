@@ -7,6 +7,8 @@ import com.lm.checktests.model.ExamResult;
 import com.lm.checktests.model.Student;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,8 @@ import java.util.Map;
  * The type Main service.
  */
 @Slf4j
+@Getter
+@Setter
 @Service
 public class MainService {
 
@@ -41,6 +46,11 @@ public class MainService {
      * The Student answers.
      */
     private Map<String, List<Answer>> studentAnswers;
+
+    /**
+     * The Exam result list.
+     */
+    private List<ExamResult> examResultList;
 
     /**
      * Extract answers from file list.
@@ -89,10 +99,11 @@ public class MainService {
      * @return the file extension
      */
     private String getFileExtension(String filename) {
-        if (filename.contains("."))
+        if (filename.contains(".")) {
             return filename.substring(filename.lastIndexOf(".") + 1);
-        else
+        } else {
             return "";
+        }
     }
 
     /**
@@ -170,8 +181,8 @@ public class MainService {
      *
      * @param exam the exam
      */
-    public void processResult(Exam exam) {
-        List<ExamResult> examResultList = new ArrayList<>();
+    public List<ExamResult> processResult(Exam exam) {
+        examResultList = new ArrayList<>();
         if (studentAnswers != null) {
             for (Map.Entry<String, List<Answer>> studentAnswers : studentAnswers.entrySet()) {
                 ExamResult examResult = new ExamResult();
@@ -182,6 +193,10 @@ public class MainService {
                 examResultList.add(examResult);
             }
         }
+        // Order by average
+        Collections.sort(examResultList, Collections.reverseOrder());
+
+        return examResultList;
 
     }
 
@@ -195,16 +210,16 @@ public class MainService {
         Integer amountStudentCorrectAnswers = 0;
         List<Answer> rightAnswers = examResult.getExam().getAnswers();
         List<Answer> studentAnswers = examResult.getStudentAnswers();
-        for(int i = 0; i < examResult.getExam().getNumberOfQuestions(); i++){
-            if(rightAnswers.get(i).equals(studentAnswers.get(i))){
+        for (int i = 0; i < examResult.getExam().getNumberOfQuestions(); i++) {
+            if (rightAnswers.get(i).equals(studentAnswers.get(i))) {
                 amountStudentCorrectAnswers += 1;
             }
         }
 
         Double average = amountStudentCorrectAnswers.doubleValue() * 100 / examResult.getExam().getNumberOfQuestions().doubleValue();
 
-        log.info("Student: "+ examResult.getStudent().getMatricula());
-        log.info("Average: "+ average);
+        log.info("Student: " + examResult.getStudent().getMatricula());
+        log.info("Average: " + average);
 
         return average;
     }
@@ -217,9 +232,9 @@ public class MainService {
      */
     private Student recoverStudentByMatricula(String studentMatricula) {
         Student studentFound = null;
-        for(Student student: students){
+        for (Student student : students) {
             String matricula = String.valueOf(student.getMatricula());
-            if(matricula.equalsIgnoreCase(studentMatricula)){
+            if (matricula.equalsIgnoreCase(studentMatricula)) {
                 studentFound = student;
                 break;
             }

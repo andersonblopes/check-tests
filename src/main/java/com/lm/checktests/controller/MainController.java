@@ -2,6 +2,7 @@ package com.lm.checktests.controller;
 
 import com.lm.checktests.model.Constants;
 import com.lm.checktests.model.Exam;
+import com.lm.checktests.model.ExamResult;
 import com.lm.checktests.model.Student;
 import com.lm.checktests.service.MainService;
 import lombok.Data;
@@ -66,6 +67,11 @@ public class MainController {
     private List<Student> students = new ArrayList<>();
 
     /**
+     * The Exam result list.
+     */
+    private List<ExamResult> examResultList = new ArrayList<>();
+
+    /**
      * The Exam.
      */
     private Exam exam;
@@ -113,12 +119,15 @@ public class MainController {
     @GetMapping("/restart")
     public ModelAndView restart(ModelAndView modelAndView) {
         modelAndView.setViewName("index");
-        setStatusErrors(false);
-        students = new ArrayList<>();
-        setUploadCandidates(false);
-        setUploadCorrectAnswers(false);
-        setUploadCandidatesAnswers(false);
         exam = null;
+        students = new ArrayList<>();
+        examResultList = new ArrayList<>();
+        setStatusErrors(false);
+        setUploadCorrectAnswers(false);
+        setUploadCandidates(false);
+        setUploadCandidatesAnswers(false);
+        setProcessDone(false);
+
         modelAndView.addObject("students", students);
         modelAndView.addObject("exam", exam);
         modelAndView.addObject("statusErrors", isStatusErrors());
@@ -142,7 +151,7 @@ public class MainController {
         setStatusErrors(false);
         modelAndView.setViewName("selection-process-view");
         modelAndView.addObject("cardHeader", cardHeader);
-        modelAndView.addObject("exam", this.exam == null ? new Exam() : this.exam);
+        modelAndView.addObject("exam", exam == null ? new Exam() : exam);
         modelAndView.addObject("statusErrors", isStatusErrors());
         modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
         return modelAndView;
@@ -249,7 +258,7 @@ public class MainController {
 
             try {
 
-                this.students = mainService.parseStudentsFromFile(file);
+                students = mainService.parseStudentsFromFile(file);
 
                 setStatusErrors(false);
                 setUploadCandidates(true);
@@ -341,10 +350,11 @@ public class MainController {
     @GetMapping("/result")
     public ModelAndView result(ModelAndView modelAndView) {
         modelAndView.setViewName("result-view");
-        cardHeader = "Resultado do processo seletivo";
+        cardHeader = "Resultado do Concurso: " + exam.getTitle().toUpperCase();
         modelAndView.addObject("cardHeader", cardHeader);
         modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
         modelAndView.addObject("exam", exam);
+        modelAndView.addObject("results", examResultList);
         modelAndView.addObject("statusErrors", isStatusErrors());
         modelAndView.addObject("message", message);
         return modelAndView;
@@ -359,16 +369,14 @@ public class MainController {
     @PostMapping("/result")
     public ModelAndView processResult(ModelAndView modelAndView) {
         modelAndView.setViewName("result-view");
-        cardHeader = "Resultado do processo seletivo";
+        examResultList = mainService.processResult(exam);
+        cardHeader = "Resultado do Concurso: " + exam.getTitle().toUpperCase();
         modelAndView.addObject("cardHeader", cardHeader);
         modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
-        modelAndView.addObject("exam", exam);
         modelAndView.addObject("statusErrors", isStatusErrors());
         modelAndView.addObject("message", message);
-
-
-        mainService.processResult(exam);
-
+        modelAndView.addObject("exam", exam);
+        modelAndView.addObject("results", examResultList);
         return modelAndView;
     }
 

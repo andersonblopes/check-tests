@@ -9,7 +9,7 @@ import java.util.List;
  * The type Exam result.
  */
 @Data
-public class ExamResult {
+public class ExamResult implements Comparable<ExamResult> {
 
     /**
      * The Student.
@@ -30,4 +30,15 @@ public class ExamResult {
      * The Average.
      */
     private Double average;
+
+    /**
+     * Compare to int.
+     *
+     * @param result the result
+     * @return the int
+     */
+    @Override
+    public int compareTo(ExamResult result) {
+        return getAverage().compareTo(result.getAverage());
+    }
 }
