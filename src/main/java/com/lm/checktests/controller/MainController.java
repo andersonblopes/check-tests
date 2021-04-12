@@ -293,6 +293,10 @@ public class MainController {
         modelAndView.addObject("cardHeader", cardHeader);
         modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
         modelAndView.addObject("exam", exam);
+        modelAndView.addObject("results", examResultList);
+        modelAndView.addObject("statusErrors", isStatusErrors());
+        modelAndView.addObject("message", message);
+        
         return modelAndView;
     }
 
@@ -335,6 +339,7 @@ public class MainController {
         }
 
         modelAndView.addObject("exam", exam);
+        modelAndView.addObject("results", examResultList);
         modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
         modelAndView.addObject("statusErrors", isStatusErrors());
         modelAndView.addObject("message", message);
