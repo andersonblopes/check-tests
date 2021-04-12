@@ -27,4 +27,9 @@ public class Answer {
      * The Question answer.
      */
     private Character questionAnswer;
+
+    /**
+     * The Valid.
+     */
+    private Boolean valid = Boolean.TRUE;
 }

@@ -19,4 +19,9 @@ public class Constants {
      * The constant DIGITS_AMOUNT_FROM_STUDENT_INSCRIPTION.
      */
     public static final Integer DIGITS_AMOUNT_FROM_STUDENT_INSCRIPTION = 8;
+
+    /**
+     * The constant INVALID_QUESTION.
+     */
+    public static final char INVALID_QUESTION = 'Z';
 }

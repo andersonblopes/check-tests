@@ -3,6 +3,7 @@ package com.lm.checktests.service;
 import com.lm.checktests.model.Answer;
 import com.lm.checktests.model.Constants;
 import com.lm.checktests.model.Exam;
+import com.lm.checktests.model.ExamResult;
 import com.lm.checktests.model.Student;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -32,6 +33,11 @@ import java.util.Map;
 public class MainService {
 
     /**
+     * The Students.
+     */
+    private List<Student> students;
+
+    /**
      * The Student answers.
      */
     private Map<String, List<Answer>> studentAnswers;
@@ -56,6 +62,7 @@ public class MainService {
             Answer answer = new Answer();
             answer.setQuestionNumber(answersFromFile.size() + 1);
             answer.setQuestionAnswer(ch);
+            answer.setValid(ch != Constants.INVALID_QUESTION);
             answersFromFile.add(answer);
         }
 
@@ -106,7 +113,7 @@ public class MainService {
                 .withIgnoreLeadingWhiteSpace(true).withSeparator(';').build();
 
         // convert `CsvToBean` object to list of students
-        List<Student> students = csvToBean.parse();
+        students = csvToBean.parse();
 
         return students;
     }
@@ -124,15 +131,15 @@ public class MainService {
 
         file.transferTo(tempFile);
 
-        if(tempFile.exists()){
+        if (tempFile.exists()) {
             lines = Files.readAllLines(tempFile.toPath(),
                     Charset.defaultCharset());
         }
 
-        if(!lines.isEmpty()){
+        if (!lines.isEmpty()) {
             studentAnswers = new HashMap<>();
-            for(String line : lines){
-                String [] res = line.split("\n");
+            for (String line : lines) {
+                String[] res = line.split("\n");
                 String inscription = res[0].substring(0, Constants.DIGITS_AMOUNT_FROM_STUDENT_INSCRIPTION);
                 String answerStr = res[0].substring(Constants.DIGITS_AMOUNT_FROM_STUDENT_INSCRIPTION);
                 studentAnswers.put(inscription, extractAnswersFromString(answerStr));
@@ -146,10 +153,10 @@ public class MainService {
      * @param answersLine the answers line
      * @return the list
      */
-    private List<Answer> extractAnswersFromString(String answersLine){
+    private List<Answer> extractAnswersFromString(String answersLine) {
         List<Answer> answersStudent = new ArrayList<>();
-        for(int i = 0; i < answersLine.length(); i++) {
-            char ch = (char) answersLine.charAt(i);;
+        for (int i = 0; i < answersLine.length(); i++) {
+            char ch = answersLine.charAt(i);
             Answer answer = new Answer();
             answer.setQuestionNumber(i + 1);
             answer.setQuestionAnswer(ch);
@@ -157,5 +164,68 @@ public class MainService {
         }
         return answersStudent;
     }
+
+    /**
+     * Process result.
+     *
+     * @param exam the exam
+     */
+    public void processResult(Exam exam) {
+        List<ExamResult> examResultList = new ArrayList<>();
+        if (studentAnswers != null) {
+            for (Map.Entry<String, List<Answer>> studentAnswers : studentAnswers.entrySet()) {
+                ExamResult examResult = new ExamResult();
+                examResult.setExam(exam);
+                examResult.setStudent(recoverStudentByMatricula(studentAnswers.getKey()));
+                examResult.setStudentAnswers(studentAnswers.getValue());
+                examResult.setAverage(calcAverageFromStudent(examResult));
+                examResultList.add(examResult);
+            }
+        }
+
+    }
+
+    /**
+     * Calc average from student double.
+     *
+     * @param examResult the exam result
+     * @return the double
+     */
+    private Double calcAverageFromStudent(ExamResult examResult) {
+        Integer amountStudentCorrectAnswers = 0;
+        List<Answer> rightAnswers = examResult.getExam().getAnswers();
+        List<Answer> studentAnswers = examResult.getStudentAnswers();
+        for(int i = 0; i < examResult.getExam().getNumberOfQuestions(); i++){
+            if(rightAnswers.get(i).equals(studentAnswers.get(i))){
+                amountStudentCorrectAnswers += 1;
+            }
+        }
+
+        Double average = amountStudentCorrectAnswers.doubleValue() * 100 / examResult.getExam().getNumberOfQuestions().doubleValue();
+
+        log.info("Student: "+ examResult.getStudent().getMatricula());
+        log.info("Average: "+ average);
+
+        return average;
+    }
+
+    /**
+     * Recover student by matricula student.
+     *
+     * @param studentMatricula the student matricula
+     * @return the student
+     */
+    private Student recoverStudentByMatricula(String studentMatricula) {
+        Student studentFound = null;
+        for(Student student: students){
+            String matricula = String.valueOf(student.getMatricula());
+            if(matricula.equalsIgnoreCase(studentMatricula)){
+                studentFound = student;
+                break;
+            }
+        }
+        return studentFound;
+    }
+
 
 }

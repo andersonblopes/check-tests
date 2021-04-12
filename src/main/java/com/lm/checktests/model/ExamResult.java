@@ -11,11 +11,23 @@ import java.util.List;
 @Data
 public class ExamResult {
 
+    /**
+     * The Student.
+     */
     private Student student;
 
+    /**
+     * The Student answers.
+     */
     private List<Answer> studentAnswers;
 
+    /**
+     * The Exam.
+     */
     private Exam exam;
 
+    /**
+     * The Average.
+     */
     private Double average;
 }

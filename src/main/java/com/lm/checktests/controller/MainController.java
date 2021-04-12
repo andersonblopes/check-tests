@@ -51,7 +51,7 @@ public class MainController {
     private boolean uploadCorrectAnswers;
 
     /**
-     * The Upload candidates.
+     * The Upload candidates answers.
      */
     private boolean uploadCandidatesAnswers;
 
@@ -69,6 +69,11 @@ public class MainController {
      * The Exam.
      */
     private Exam exam;
+
+    /**
+     * The Message.
+     */
+    private String message = "";
 
     /**
      * The Main service.
@@ -144,12 +149,12 @@ public class MainController {
     }
 
     /**
-     * Register selection string.
+     * Register selection model and view.
      *
      * @param exam         the exam
      * @param result       the result
      * @param modelAndView the model and view
-     * @return the string
+     * @return the model and view
      * @throws IOException the io exception
      */
     @PostMapping("/selection")
@@ -267,31 +272,33 @@ public class MainController {
     }
 
     /**
-     * Result model and view.
+     * Candidate answers model and view.
      *
      * @param modelAndView the model and view
      * @return the model and view
      */
     @GetMapping("/candidates-answers")
-    public ModelAndView result(ModelAndView modelAndView) {
+    public ModelAndView candidateAnswers(ModelAndView modelAndView) {
         modelAndView.setViewName("candidates-answers-view");
-        cardHeader = "Resultado do processo seletivo";
+        cardHeader = "Apuração das respostas dos candidatos";
         modelAndView.addObject("cardHeader", cardHeader);
         modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
+        modelAndView.addObject("exam", exam);
         return modelAndView;
     }
 
+
     /**
-     * Process result model and view.
+     * Upload candidate answers model and view.
      *
      * @param file         the file
      * @param modelAndView the model and view
      * @return the model and view
      */
     @PostMapping("/candidates-answers")
-    public ModelAndView processResult(@RequestParam("file") MultipartFile file, ModelAndView modelAndView) {
+    public ModelAndView uploadCandidateAnswers(@RequestParam("file") MultipartFile file, ModelAndView modelAndView) {
         modelAndView.setViewName("candidates-answers-view");
-        cardHeader = "Resultado do processo seletivo";
+        cardHeader = "Apuração das respostas dos candidatos";
         modelAndView.addObject("cardHeader", cardHeader);
         String message = "";
         setUploadCandidatesAnswers(true);
@@ -303,7 +310,7 @@ public class MainController {
             message = "<strong>Falha na importação do arquivo</strong>" +
                     "<br>" +
                     "O arquivo não pode ser vazio ou diferente do formato 'txt'";
-        }else{
+        } else {
             try {
 
                 mainService.extractStudentAnswersFromFile(file);
@@ -318,10 +325,50 @@ public class MainController {
             }
         }
 
-
+        modelAndView.addObject("exam", exam);
         modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
         modelAndView.addObject("statusErrors", isStatusErrors());
         modelAndView.addObject("message", message);
+        return modelAndView;
+    }
+
+    /**
+     * Result model and view.
+     *
+     * @param modelAndView the model and view
+     * @return the model and view
+     */
+    @GetMapping("/result")
+    public ModelAndView result(ModelAndView modelAndView) {
+        modelAndView.setViewName("result-view");
+        cardHeader = "Resultado do processo seletivo";
+        modelAndView.addObject("cardHeader", cardHeader);
+        modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
+        modelAndView.addObject("exam", exam);
+        modelAndView.addObject("statusErrors", isStatusErrors());
+        modelAndView.addObject("message", message);
+        return modelAndView;
+    }
+
+    /**
+     * Process result model and view.
+     *
+     * @param modelAndView the model and view
+     * @return the model and view
+     */
+    @PostMapping("/result")
+    public ModelAndView processResult(ModelAndView modelAndView) {
+        modelAndView.setViewName("result-view");
+        cardHeader = "Resultado do processo seletivo";
+        modelAndView.addObject("cardHeader", cardHeader);
+        modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
+        modelAndView.addObject("exam", exam);
+        modelAndView.addObject("statusErrors", isStatusErrors());
+        modelAndView.addObject("message", message);
+
+
+        mainService.processResult(exam);
+
         return modelAndView;
     }
 

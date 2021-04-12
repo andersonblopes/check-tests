@@ -118,9 +118,9 @@
     </div>
 
     <div class="py-3 text-center">
-        <form class="form" th:action="@{/view-result}">
+        <form class="form" th:action="@{/result}" method="POST">
             <button class="btn btn-lg btn-success"
-                    th:disabled="${!uploadCandidates || !uploadCandidatesAnswers || !uploadCorrectAnswers || statusErrors}"
+                    th:disabled="${!uploadCandidates || !uploadCandidatesAnswers || !uploadCorrectAnswers  || statusErrors}"
                     type="submit">Processar dados
             </button>
         </form>
