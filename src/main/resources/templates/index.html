@@ -8,7 +8,7 @@
 
     <!--Bootstrap 4-->
     <link rel="stylesheet"
-          th:href="@{webjars/bootstrap/4.4.1/css/bootstrap.min.css}"/>
+          href="/webjars/bootstrap/4.4.1/css/bootstrap.min.css"/>
     <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
     <script src="/webjars/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
@@ -30,6 +30,9 @@
                 <li th:if="${uploadCandidates}" lass="nav-item"><a class="nav-link" href="/candidates">Candidatos</a>
                 </li>
                 <li th:if="${processDone}" class="nav-item"><a class="nav-link" href="/result">Resultado</a>
+                </li>
+                <li th:if="${processDone}" class="nav-item"><a class="nav-link"
+                                                               href="/result/candidate/10">Teste</a>
                 </li>
             </ul>
         </div>
