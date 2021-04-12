@@ -133,9 +133,10 @@ public class MainService {
      * Extract student answers from file.
      *
      * @param file the file
+     * @param exam the exam
      * @throws IOException the io exception
      */
-    public void extractStudentAnswersFromFile(MultipartFile file) throws IOException {
+    public void extractStudentAnswersFromFile(MultipartFile file, Exam exam) throws IOException {
         List<String> lines = new ArrayList<>();
 
         File tempFile = new File(System.getProperty("java.io.tmpdir") + "/" + "_" + RandomStringUtils.randomAlphabetic(10));
@@ -151,6 +152,9 @@ public class MainService {
             studentAnswers = new HashMap<>();
             for (String line : lines) {
                 String[] res = line.split("\n");
+                if (res[0].length() != (Constants.DIGITS_AMOUNT_FROM_STUDENT_INSCRIPTION + exam.getNumberOfQuestions())) {
+                    throw new IllegalArgumentException("Arquivo possui formato inválido!");
+                }
                 String inscription = res[0].substring(0, Constants.DIGITS_AMOUNT_FROM_STUDENT_INSCRIPTION);
                 String answerStr = res[0].substring(Constants.DIGITS_AMOUNT_FROM_STUDENT_INSCRIPTION);
                 studentAnswers.put(inscription, extractAnswersFromString(answerStr));
@@ -180,6 +184,7 @@ public class MainService {
      * Process result.
      *
      * @param exam the exam
+     * @return the list
      */
     public List<ExamResult> processResult(Exam exam) {
         examResultList = new ArrayList<>();
@@ -217,9 +222,6 @@ public class MainService {
         }
 
         Double average = amountStudentCorrectAnswers.doubleValue() * 100 / examResult.getExam().getNumberOfQuestions().doubleValue();
-
-        log.info("Student: " + examResult.getStudent().getMatricula());
-        log.info("Average: " + average);
 
         return average;
     }

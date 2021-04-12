@@ -12,13 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,14 +98,8 @@ public class MainController {
         modelAndView.setViewName("index");
         cardHeader = "Bem vindo(a) ao 'check-tests'!";
         setStatusErrors(false);
-        modelAndView.addObject("cardHeader", cardHeader);
-        modelAndView.addObject("students", students);
-        modelAndView.addObject("exam", exam);
-        modelAndView.addObject("statusErrors", isStatusErrors());
-        modelAndView.addObject("uploadCandidates", isUploadCandidates());
-        modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
-        modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
-        modelAndView.addObject("processDone", isProcessDone());
+
+        modelAndView = prepareModelAndView(modelAndView);
 
         return modelAndView;
     }
@@ -128,13 +122,7 @@ public class MainController {
         setUploadCandidatesAnswers(false);
         setProcessDone(false);
 
-        modelAndView.addObject("students", students);
-        modelAndView.addObject("exam", exam);
-        modelAndView.addObject("statusErrors", isStatusErrors());
-        modelAndView.addObject("uploadCandidates", isUploadCandidates());
-        modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
-        modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
-        modelAndView.addObject("processDone", isProcessDone());
+        modelAndView = prepareModelAndView(modelAndView);
 
         return modelAndView;
     }
@@ -147,13 +135,13 @@ public class MainController {
      */
     @GetMapping("/selection")
     public ModelAndView selection(ModelAndView modelAndView) {
+        modelAndView.setViewName("selection-process-view");
         cardHeader = "Dados do processo seletivo";
         setStatusErrors(false);
-        modelAndView.setViewName("selection-process-view");
-        modelAndView.addObject("cardHeader", cardHeader);
-        modelAndView.addObject("exam", exam == null ? new Exam() : exam);
-        modelAndView.addObject("statusErrors", isStatusErrors());
-        modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
+        exam = exam == null ? new Exam() : exam;
+
+        modelAndView = prepareModelAndView(modelAndView);
+
         return modelAndView;
     }
 
@@ -172,7 +160,6 @@ public class MainController {
         StringBuilder message = new StringBuilder();
         modelAndView.setViewName("selection-process-view");
         cardHeader = "Dados do processo seletivo";
-        modelAndView.addObject("cardHeader", cardHeader);
         setStatusErrors(false);
         setUploadCorrectAnswers(true);
 
@@ -204,11 +191,10 @@ public class MainController {
             message.append("<br>");
         }
 
+        this.message = message.toString();
         this.exam = exam;
-        modelAndView.addObject("message", message);
-        modelAndView.addObject("statusErrors", isStatusErrors());
-        modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
-        modelAndView.addObject("exam", exam);
+
+        modelAndView = prepareModelAndView(modelAndView);
 
         return modelAndView;
     }
@@ -223,10 +209,8 @@ public class MainController {
     public ModelAndView candidates(ModelAndView modelAndView) {
         modelAndView.setViewName("candidates-view");
         cardHeader = "Os Candidatos inscritos no processo seletivo";
-        modelAndView.addObject("cardHeader", cardHeader);
-        modelAndView.addObject("statusErrors", isStatusErrors());
-        modelAndView.addObject("uploadCandidates", isUploadCandidates());
-        modelAndView.addObject("students", students);
+        modelAndView = prepareModelAndView(modelAndView);
+
         return modelAndView;
     }
 
@@ -242,8 +226,6 @@ public class MainController {
 
         modelAndView.setViewName("candidates-view");
         cardHeader = "Os Candidatos inscritos no processo seletivo";
-        modelAndView.addObject("cardHeader", cardHeader);
-        String message = "";
         setStatusErrors(false);
         setUploadCandidates(true);
 
@@ -255,51 +237,21 @@ public class MainController {
                     "O arquivo não pode ser vazio ou diferente do formato 'csv'";
 
         } else {
-
             try {
-
                 students = mainService.parseStudentsFromFile(file);
-
                 setStatusErrors(false);
                 setUploadCandidates(true);
-                modelAndView.addObject("students", students);
 
             } catch (Exception ex) {
-
                 message = "Ocorreu um erro durante o processamento do arquivo CSV.";
-                modelAndView.addObject("message", message);
                 setStatusErrors(true);
-                modelAndView.addObject("statusErrors", isStatusErrors());
             }
         }
 
-        modelAndView.addObject("statusErrors", isStatusErrors());
-        modelAndView.addObject("uploadCandidates", isUploadCandidates());
-        modelAndView.addObject("message", message);
+        modelAndView = prepareModelAndView(modelAndView);
 
         return modelAndView;
     }
-
-    /**
-     * Candidate answers model and view.
-     *
-     * @param modelAndView the model and view
-     * @return the model and view
-     */
-    @GetMapping("/candidates-answers")
-    public ModelAndView candidateAnswers(ModelAndView modelAndView) {
-        modelAndView.setViewName("candidates-answers-view");
-        cardHeader = "Apuração das respostas dos candidatos";
-        modelAndView.addObject("cardHeader", cardHeader);
-        modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
-        modelAndView.addObject("exam", exam);
-        modelAndView.addObject("results", examResultList);
-        modelAndView.addObject("statusErrors", isStatusErrors());
-        modelAndView.addObject("message", message);
-        
-        return modelAndView;
-    }
-
 
     /**
      * Upload candidate answers model and view.
@@ -310,10 +262,8 @@ public class MainController {
      */
     @PostMapping("/candidates-answers")
     public ModelAndView uploadCandidateAnswers(@RequestParam("file") MultipartFile file, ModelAndView modelAndView) {
-        modelAndView.setViewName("candidates-answers-view");
+        modelAndView.setViewName("index");
         cardHeader = "Apuração das respostas dos candidatos";
-        modelAndView.addObject("cardHeader", cardHeader);
-        String message = "";
         setUploadCandidatesAnswers(true);
         setStatusErrors(false);
 
@@ -326,23 +276,18 @@ public class MainController {
         } else {
             try {
 
-                mainService.extractStudentAnswersFromFile(file);
+                mainService.extractStudentAnswersFromFile(file, exam);
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 message = "Ocorreu um erro durante o processamento do arquivo TXT.";
                 modelAndView.addObject("message", message);
                 setStatusErrors(true);
+                setUploadCandidatesAnswers(false);
                 modelAndView.addObject("statusErrors", isStatusErrors());
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
 
-        modelAndView.addObject("exam", exam);
-        modelAndView.addObject("results", examResultList);
-        modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
-        modelAndView.addObject("statusErrors", isStatusErrors());
-        modelAndView.addObject("message", message);
+        modelAndView = prepareModelAndView(modelAndView);
         return modelAndView;
     }
 
@@ -354,14 +299,11 @@ public class MainController {
      */
     @GetMapping("/result")
     public ModelAndView result(ModelAndView modelAndView) {
+
         modelAndView.setViewName("result-view");
         cardHeader = "Resultado do Concurso: " + exam.getTitle().toUpperCase();
-        modelAndView.addObject("cardHeader", cardHeader);
-        modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
-        modelAndView.addObject("exam", exam);
-        modelAndView.addObject("results", examResultList);
-        modelAndView.addObject("statusErrors", isStatusErrors());
-        modelAndView.addObject("message", message);
+        modelAndView = prepareModelAndView(modelAndView);
+
         return modelAndView;
     }
 
@@ -373,15 +315,54 @@ public class MainController {
      */
     @PostMapping("/result")
     public ModelAndView processResult(ModelAndView modelAndView) {
+
         modelAndView.setViewName("result-view");
-        examResultList = mainService.processResult(exam);
         cardHeader = "Resultado do Concurso: " + exam.getTitle().toUpperCase();
-        modelAndView.addObject("cardHeader", cardHeader);
+        examResultList = mainService.processResult(exam);
+        setProcessDone(true);
+        modelAndView = prepareModelAndView(modelAndView);
+
+        return modelAndView;
+    }
+
+    @GetMapping("/result/candidate/{inscription}")
+    public ModelAndView showResultCandidateDetails(@PathVariable(name = "inscription") String inscription, ModelAndView modelAndView) {
+        log.info("Inscription: " + inscription);
+        modelAndView.setViewName("result-detail-view");
+        cardHeader = "Resultado do Concurso: " + exam.getTitle().toUpperCase();
+        modelAndView = prepareModelAndView(modelAndView);
+
+        return modelAndView;
+    }
+
+    /**
+     * Candidate answers model and view.
+     *
+     * @param modelAndView the model and view
+     * @return the model and view
+     */
+    @GetMapping("/candidates-answers")
+    public ModelAndView candidateAnswers(ModelAndView modelAndView) {
+        modelAndView.setViewName("result-detail-view");
+        cardHeader = "Apuração das respostas dos candidatos";
+        modelAndView = prepareModelAndView(modelAndView);
+
+        return modelAndView;
+    }
+
+    private ModelAndView prepareModelAndView(ModelAndView modelAndView) {
+
+        modelAndView.addObject("cardHeader", getCardHeader());
         modelAndView.addObject("uploadCandidatesAnswers", isUploadCandidatesAnswers());
+        modelAndView.addObject("exam", getExam());
         modelAndView.addObject("statusErrors", isStatusErrors());
-        modelAndView.addObject("message", message);
-        modelAndView.addObject("exam", exam);
-        modelAndView.addObject("results", examResultList);
+        modelAndView.addObject("message", getMessage());
+        modelAndView.addObject("results", getExamResultList());
+        modelAndView.addObject("students", getStudents());
+        modelAndView.addObject("uploadCandidates", isUploadCandidates());
+        modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
+        modelAndView.addObject("processDone", isProcessDone());
+
         return modelAndView;
     }
 

@@ -28,8 +28,6 @@
                 </li>
                 <li class="nav-item"><a class="nav-link" href="/candidates">Candidatos</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/candidates-answers">Apuração</a>
-                </li>
                 <li class="nav-item"><a class="nav-link" href="/result">Resultado</a>
                 </li>
             </ul>
@@ -84,7 +82,7 @@
                             th:text="${#numbers.formatDecimal(result.average, 0, 'COMMA', 2, 'POINT')}"></td>
                         <td class="text-center" th:text="${result.getStudent.situacao}"></td>
                         <td class="text-center">
-                            <a>
+                            <a th:href="@{/result/candidate/{result.getStudent.inscricao}}">
                                 <img class="rounded" style="width: 25%;" th:src="@{/images/details.png}"
                                      alt="Detalhe" title="Respostas deste candidato"/>
                             </a>

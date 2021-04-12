@@ -28,8 +28,6 @@
                 </li>
                 <li class="nav-item"><a class="nav-link" href="/candidates">Candidatos</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/candidates-answers">Apuração</a>
-                </li>
                 <li class="nav-item"><a class="nav-link" href="/result">Resultado</a>
                 </li>
             </ul>
@@ -66,7 +64,8 @@
     <div class="m-2">
 
         <!--display users list-->
-        <table class="table table-striped table-bordered table-responsive" style="font-size: 12px;" th:if="${!statusErrors && students.size() gt 0}">
+        <table class="table table-striped table-bordered table-responsive" style="font-size: 12px;"
+               th:if="${!statusErrors && students.size() gt 0}">
             <thead>
             <tr>
                 <th scope="col" style="width: 1%;">#</th>

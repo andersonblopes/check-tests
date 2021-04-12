@@ -29,8 +29,6 @@
                 </li>
                 <li th:if="${uploadCandidates}" lass="nav-item"><a class="nav-link" href="/candidates">Candidatos</a>
                 </li>
-                <li th:if="${uploadCandidatesAnswers}" class="nav-item"><a class="nav-link" href="/candidates-answers">Apuração</a>
-                </li>
                 <li th:if="${processDone}" class="nav-item"><a class="nav-link" href="/result">Resultado</a>
                 </li>
             </ul>
@@ -41,7 +39,7 @@
     </nav>
     <div>
         <div class="alert alert-danger" role="alert" th:if="${statusErrors}">
-            <strong>Error:</strong> <span th:text="${message}"></span>
+            <strong>Error:</strong> <span th:utext="${message}"></span>
         </div>
     </div>
 
@@ -53,8 +51,9 @@
                 <div class="card border-info" th:if="${!uploadCorrectAnswers}">
                     <div class="card-header h6">Concurso</div>
                     <div class="card-body">
-                        <p><a class="badge badge-pill badge-warning" href="/selection" th:disabled="${!uploadCorrectAnswers}"
-                              title="Configurar o processo seletivo.">Configure</a>  o processo seletivo</p>
+                        <p><a class="badge badge-pill badge-warning" href="/selection"
+                              th:disabled="${!uploadCorrectAnswers}"
+                              title="Configurar o processo seletivo.">Configure</a> o processo seletivo</p>
                     </div>
                 </div>
             </div>
@@ -79,7 +78,8 @@
             <div class="card border-info mb-3" th:if="${!uploadCandidates}">
                 <div class="card-header h6">Candidatos</div>
                 <div class="card-body">
-                    <p><a class="badge badge-pill badge-warning" href="/candidates" th:disabled="${!uploadCorrectAnswers}"
+                    <p><a class="badge badge-pill badge-warning" href="/candidates"
+                          th:disabled="${!uploadCorrectAnswers}"
                           title="Arquivo .csv contendo a lista dos candidatos.">Importar</a> os
                         candidatos inscritos.</p>
                 </div>
@@ -101,7 +101,8 @@
             <div class="card border-info mb-3" th:if="${!uploadCandidatesAnswers}">
                 <div class="card-header h6">Apuração</div>
                 <div class="card-body">
-                    <p><a class="badge badge-pill badge-warning" href="/candidates-answers" th:disabled="${!uploadCandidates}"
+                    <p><a class="badge badge-pill badge-warning" href="/candidates-answers"
+                          th:disabled="${!uploadCandidates}"
                           title="Arquivo .csv contendo as respostas dos candidatos.">Importar</a> as
                         respostas dos candidatos.</p>
                 </div>
@@ -118,12 +119,18 @@
     </div>
 
     <div class="py-3 text-center">
-        <form class="form" th:action="@{/result}" method="POST">
-            <button class="btn btn-lg btn-success"
+        <form class="form" th:action="@{/result}" method="POST" th:if="${!processDone}">
+            <button class="btn btn-lg btn-primary"
                     th:disabled="${!uploadCandidates || !uploadCandidatesAnswers || !uploadCorrectAnswers  || statusErrors}"
                     type="submit">Processar dados
             </button>
         </form>
+        <form class="form" th:action="@{/result}" th:if="${processDone}">
+            <button class="btn btn-lg btn-success" th:action="@{/result}"
+                    type="submit">Ver Resultado
+            </button>
+        </form>
+
     </div>
 </div>
 </body>
