@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no"
           name="viewport">
-    <title>Check Tests - Apuração</title>
+    <title>Check Tests - Detalhe</title>
 
     <!--Bootstrap 4-->
     <link rel="stylesheet"
@@ -41,24 +41,6 @@
             </div>
         </div>
         <div class="col-sm">
-
-            <div class="card border-info m-2" th:if="${!uploadCandidatesAnswers}">
-                <div class="card-body">
-                    <p class="card-text text-justify">Importe as respostas dos candidatos
-                        que participaram do processo.</p>
-                    <form class="form-inline" enctype="multipart/form-data" method="POST"
-                          th:action="@{/candidates-answers}">
-                        <div class="form-group mx-sm-3 mb-2">
-                            <input accept=".txt" class="form-control-file smaller-input"
-                                   id="file" name="file" type="file">
-                        </div>
-                        <button class="btn btn-primary float-right"
-                                th:disabled="${exam == null || exam.getNumberOfQuestions() == null}"
-                                type="submit">Importar
-                        </button>
-                    </form>
-                </div>
-            </div>
 
             <div class="m-2">
 

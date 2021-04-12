@@ -88,6 +88,11 @@ public class MainController {
     private MainService mainService;
 
     /**
+     * The Exam result.
+     */
+    private ExamResult examResult;
+
+    /**
      * Index model and view.
      *
      * @param modelAndView the model and view
@@ -114,6 +119,7 @@ public class MainController {
     public ModelAndView restart(ModelAndView modelAndView) {
         modelAndView.setViewName("index");
         exam = null;
+        examResult = null;
         students = new ArrayList<>();
         examResultList = new ArrayList<>();
         setStatusErrors(false);
@@ -325,11 +331,19 @@ public class MainController {
         return modelAndView;
     }
 
+    /**
+     * Show result candidate details model and view.
+     *
+     * @param inscription  the inscription
+     * @param modelAndView the model and view
+     * @return the model and view
+     */
     @GetMapping("/result/candidate/{inscription}")
-    public ModelAndView showResultCandidateDetails(@PathVariable(name = "inscription") String inscription, ModelAndView modelAndView) {
+    public ModelAndView showResultCandidateDetails(@PathVariable("inscription") String inscription, ModelAndView modelAndView) {
         log.info("Inscription: " + inscription);
         modelAndView.setViewName("result-detail-view");
         cardHeader = "Resultado do Concurso: " + exam.getTitle().toUpperCase();
+
         modelAndView = prepareModelAndView(modelAndView);
 
         return modelAndView;
@@ -342,14 +356,20 @@ public class MainController {
      * @return the model and view
      */
     @GetMapping("/candidates-answers")
-    public ModelAndView candidateAnswers(ModelAndView modelAndView) {
-        modelAndView.setViewName("result-detail-view");
+    public ModelAndView uploadCandidateAnswers(ModelAndView modelAndView) {
+        modelAndView.setViewName("upload-candidates-answers-view");
         cardHeader = "Apuração das respostas dos candidatos";
         modelAndView = prepareModelAndView(modelAndView);
 
         return modelAndView;
     }
 
+    /**
+     * Prepare model and view model and view.
+     *
+     * @param modelAndView the model and view
+     * @return the model and view
+     */
     private ModelAndView prepareModelAndView(ModelAndView modelAndView) {
 
         modelAndView.addObject("cardHeader", getCardHeader());
@@ -362,6 +382,8 @@ public class MainController {
         modelAndView.addObject("uploadCandidates", isUploadCandidates());
         modelAndView.addObject("uploadCorrectAnswers", isUploadCorrectAnswers());
         modelAndView.addObject("processDone", isProcessDone());
+        modelAndView.addObject("examResult", getExamResult());
+
 
         return modelAndView;
     }
