@@ -94,21 +94,6 @@
                     </tfoot>
                 </table>
             </div>
-
-
-            <fieldset th:if="${uploadCandidatesAnswers}" class="border border-success">
-                <legend class="w-auto">Gabarito</legend>
-                <div class="row m-1">
-                    <ul class="col-sm-1" th:each="answer : ${exam.getAnswers()}">
-                        <div class="text-center border">
-                            <div class="border border-dark" style="background: bisque"
-                                 th:text="${answer.questionNumber}"></div>
-                            <div th:text="${answer.questionAnswer}"/>
-                        </div>
-                    </ul>
-                </div>
-            </fieldset>
-
         </div>
     </div>
 </div>
