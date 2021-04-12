@@ -7,8 +7,8 @@
     <title>Check Tests - Detalhe</title>
 
     <!--Bootstrap 4-->
-    <link rel="stylesheet"
-          href="/webjars/bootstrap/4.4.1/css/bootstrap.min.css"/>
+    <link href="/webjars/bootstrap/4.4.1/css/bootstrap.min.css"
+          rel="stylesheet"/>
     <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
     <script src="/webjars/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
@@ -44,61 +44,22 @@
 
             <div class="m-2">
 
-                <!--display users list-->
-                <table class="table table-striped table-bordered table-responsive"
-                       th:if="${!statusErrors && results.size() gt 0}">
-                    <thead>
-                    <tr>
-                        <th scope="col" style="width: 1%;">#</th>
-                        <th class="text-center" scope="col">Inscrição</th>
-                        <th class="text-center" scope="col">Matrícula</th>
-                        <th scope="col">Nome</th>
-                        <th class="text-center" scope="col">Nota</th>
-                        <th class="text-center" scope="col">Situação</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="result, s : ${results}"
-                        th:classappend="${((s.index + 1) lt (exam.getNumberOfApproved() + 1) ? 'table-success' : '') +
-( (s.index + 1) gt (exam.getNumberOfApproved()) and (s.index + 1) lt (exam.getNumberOfApproved() + (exam.getNumberWaitQueue() + 1)) ? 'table-warning' : '')}">
-                        <th scope="row" style="width: 1%;" th:text="${s.index + 1 + 'º'}"></th>
-                        <td
-                                class="text-center"
-                                th:text="${result.getStudent.inscricao}"></td>
-                        <td class="text-center" th:text="${result.getStudent.matricula}"></td>
-                        <td th:text="${result.getStudent.nome}"></td>
-                        <td class="text-center"
-                            th:text="${#numbers.formatDecimal(result.average, 0, 'COMMA', 2, 'POINT')}"></td>
-                        <td class="text-center" th:text="${result.getStudent.situacao}"></td>
-                    </tr>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td colspan="11">
-                            <strong>Total de Participantes</strong>
-                            <span th:text="${results.size}"></span>
-                        </td>
-                    </tr>
-                    </tfoot>
-                </table>
+                <fieldset class="border border-success" th:if="${uploadCandidatesAnswers}">
+                    <legend class="w-auto">Respostas do Candidato</legend>
+                    <div class="row m-1">
+                        <ul class="col-sm-1" th:each="answer : ${examResult.getStudentAnswers()}">
+                            <div class="text-center border">
+                                <div class="border border-dark"
+                                     th:classappend="${answer.valid ? 'bg-success text-white' : 'bg-danger text-white'}"
+                                     th:text="${answer.questionNumber}"></div>
+                                <div th:text="${answer.questionAnswer}"/>
+                            </div>
+                        </ul>
+                    </div>
+                </fieldset>
+
             </div>
-
-
-            <fieldset th:if="${uploadCandidatesAnswers}" class="border border-success">
-                <legend class="w-auto">Gabarito</legend>
-                <div class="row m-1">
-                    <ul class="col-sm-1" th:each="answer : ${exam.getAnswers()}">
-                        <div class="text-center border">
-                            <div class="border border-dark" style="background: bisque"
-                                 th:text="${answer.questionNumber}"></div>
-                            <div th:text="${answer.questionAnswer}"/>
-                        </div>
-                    </ul>
-                </div>
-            </fieldset>
-
         </div>
     </div>
-</div>
 </body>
 </html>

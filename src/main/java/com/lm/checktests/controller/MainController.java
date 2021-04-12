@@ -340,9 +340,11 @@ public class MainController {
      */
     @GetMapping("/result/candidate/{inscription}")
     public ModelAndView showResultCandidateDetails(@PathVariable("inscription") String inscription, ModelAndView modelAndView) {
-        log.info("Inscription: " + inscription);
         modelAndView.setViewName("result-detail-view");
-        cardHeader = "Resultado do Concurso: " + exam.getTitle().toUpperCase();
+
+        examResult = mainService.getExamResultFromList(inscription, examResultList);
+
+        cardHeader = "Detalhes da prova do candidato: " + examResult.getStudent().getNome();
 
         modelAndView = prepareModelAndView(modelAndView);
 

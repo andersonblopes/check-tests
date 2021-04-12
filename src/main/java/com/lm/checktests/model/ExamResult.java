@@ -32,6 +32,16 @@ public class ExamResult implements Comparable<ExamResult> {
     private Double average;
 
     /**
+     * The Status.
+     */
+    private ExamStatus status;
+
+    /**
+     * The Position.
+     */
+    private Integer position;
+
+    /**
      * Compare to int.
      *
      * @param result the result

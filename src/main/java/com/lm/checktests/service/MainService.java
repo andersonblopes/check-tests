@@ -4,6 +4,7 @@ import com.lm.checktests.model.Answer;
 import com.lm.checktests.model.Constants;
 import com.lm.checktests.model.Exam;
 import com.lm.checktests.model.ExamResult;
+import com.lm.checktests.model.ExamStatus;
 import com.lm.checktests.model.Student;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -195,13 +196,35 @@ public class MainService {
                 examResult.setStudent(recoverStudentByMatricula(studentAnswers.getKey()));
                 examResult.setStudentAnswers(studentAnswers.getValue());
                 examResult.setAverage(calcAverageFromStudent(examResult));
+                examResult.setStatus(ExamStatus.NOT_CLASSIFIED);
                 examResultList.add(examResult);
             }
         }
+
+        sortExamResults(examResultList, exam);
+
+        return examResultList;
+    }
+
+    /**
+     * Sort exam results.
+     *
+     * @param examResultList the exam result list
+     * @param exam           the exam
+     */
+    private void sortExamResults(List<ExamResult> examResultList, Exam exam) {
+
         // Order by average
         Collections.sort(examResultList, Collections.reverseOrder());
 
-        return examResultList;
+        for (int i = 0; i < examResultList.size(); i++) {
+            examResultList.get(i).setPosition(i + 1);
+            if (i < exam.getNumberOfApproved()) {
+                examResultList.get(i).setStatus(ExamStatus.APPROVED);
+            } else if (i >= exam.getNumberOfApproved() && i < (exam.getNumberOfApproved() + exam.getNumberWaitQueue())) {
+                examResultList.get(i).setStatus(ExamStatus.WAITING);
+            }
+        }
 
     }
 
@@ -218,6 +241,8 @@ public class MainService {
         for (int i = 0; i < examResult.getExam().getNumberOfQuestions(); i++) {
             if (rightAnswers.get(i).equals(studentAnswers.get(i))) {
                 amountStudentCorrectAnswers += 1;
+            } else {
+                studentAnswers.get(i).setValid(false);
             }
         }
 
@@ -244,5 +269,28 @@ public class MainService {
         return studentFound;
     }
 
+
+    /**
+     * Gets exam result from list.
+     *
+     * @param inscription    the inscription
+     * @param examResultList the exam result list
+     * @return the exam result from list
+     */
+    public ExamResult getExamResultFromList(String inscription, List<ExamResult> examResultList) {
+
+        ExamResult examResultFound = null;
+
+        if (examResultList != null && !examResultList.isEmpty()) {
+            for (ExamResult examResult : examResultList) {
+                if (examResult.getStudent().getInscricao().equalsIgnoreCase(inscription)) {
+                    examResultFound = examResult;
+                    break;
+                }
+            }
+        }
+
+        return examResultFound;
+    }
 
 }
