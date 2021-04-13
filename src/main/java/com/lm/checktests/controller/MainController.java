@@ -214,7 +214,7 @@ public class MainController {
     @GetMapping("/candidates")
     public ModelAndView candidates(ModelAndView modelAndView) {
         modelAndView.setViewName("candidates-view");
-        cardHeader = "Os Candidatos inscritos no processo seletivo";
+        cardHeader = "Candidatos inscritos no concurso";
         modelAndView = prepareModelAndView(modelAndView);
 
         return modelAndView;
@@ -231,7 +231,7 @@ public class MainController {
     public ModelAndView uploadCandidates(@RequestParam("file") MultipartFile file, ModelAndView modelAndView) {
 
         modelAndView.setViewName("candidates-view");
-        cardHeader = "Os Candidatos inscritos no processo seletivo";
+        cardHeader = "Candidatos inscritos no concurso";
         setStatusErrors(false);
         setUploadCandidates(true);
 

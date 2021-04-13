@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no"
-          name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Check Tests - Detalhe</title>
 
     <!--Bootstrap 4-->
@@ -36,30 +35,35 @@
     <div class="card">
         <div class="card-header h6" th:text="${cardHeader}"></div>
 
-        <div class="alert alert-info m-3" role="alert">
+        <div class="m-2 alert alert-info" role="alert">
             <div class="row">
-                <div class="col-11">
+                <div class="col-12 col-sm-12 col-md-9">
                     <label>Nome</label>
-                    <h4 class="alert-heading" th:text="${examResult.getStudent.getNome()}">!</h4>
+                    <h6 class="alert-heading" th:text="${examResult.getStudent.getNome()}">!</h6>
                 </div>
-                <div class="col-1">
+                <div class="col-8 col-sm-9 col-md-2">
+                    <label>Nota</label>
+                    <h6 class="alert-heading"
+                        th:text="${#numbers.formatDecimal(examResult.average, 0, 'COMMA', 2, 'POINT')}"></h6>
+                </div>
+                <div class="col-4 col-sm-3 col-md-1">
                     <label>Class.</label>
-                    <h4 class="alert-heading" th:text="${examResult.position} +'º'">!</h4>
+                    <h6 class="alert-heading" th:text="${examResult.position} +'º'">!</h6>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-2">
+                <div class="col-5 col-sm-6 col-md-2">
                     <label>Matrícula</label>
-                    <h5 class="alert-heading" th:text="${examResult.getStudent().getMatricula()}">!</h5>
+                    <h6 class="alert-heading" th:text="${examResult.getStudent().getMatricula()}">!</h6>
                 </div>
-                <div class="col-3">
+                <div class="col-7 col-sm-6 col-md-3">
                     <label>Telefone</label>
-                    <h5 class="alert-heading" th:text="${examResult.getStudent().getTelefone()}">!</h5>
+                    <h6 class="alert-heading" th:text="${examResult.getStudent().getTelefone()}">!</h6>
                 </div>
-                <div class="col-7">
+                <div class="col-12 col-sm-12 col-md-7">
                     <label>e-mail</label>
-                    <h5 class="alert-heading" th:text="${examResult.getStudent().getEmail()}">!</h5>
+                    <h6 class="alert-heading" th:text="${examResult.getStudent().getEmail()}">!</h6>
                 </div>
             </div>
         </div>
@@ -76,7 +80,7 @@
                 <fieldset class="border border-success" th:if="${uploadCandidatesAnswers}">
                     <legend class="w-auto">Respostas do Candidato</legend>
                     <div class="row m-1">
-                        <ul class="col-sm-1" th:each="answer : ${examResult.getStudentAnswers()}">
+                        <ul class="col-2 col-sm-2 col-md-1" th:each="answer : ${examResult.getStudentAnswers()}">
                             <div class="text-center border">
                                 <div class="border border-dark"
                                      th:classappend="${answer.valid ? 'bg-success text-white' : 'bg-danger text-white'}"

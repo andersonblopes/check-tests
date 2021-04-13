@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no"
-          name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Check Tests - Candidatos</title>
 
     <!--Bootstrap 4-->
@@ -48,7 +47,7 @@
                         que participarão do processo.</p>
                     <form class="form-inline" enctype="multipart/form-data" method="POST"
                           th:action="@{/candidates}">
-                        <div class="form-group mx-sm-3 mb-2">
+                        <div class="form-group mb-2">
                             <input accept=".csv" class="form-control-file smaller-input"
                                    id="file" name="file" type="file">
                         </div>
