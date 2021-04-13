@@ -54,10 +54,10 @@ public class MainService {
     private List<ExamResult> examResultList;
 
     /**
-     * Extract answers from file list.
+     * Extract answers from file exam.
      *
      * @param exam the exam
-     * @return the list
+     * @return the exam
      * @throws IOException the io exception
      */
     public Exam extractAnswersFromFile(Exam exam) throws IOException {
@@ -182,7 +182,7 @@ public class MainService {
     }
 
     /**
-     * Process result.
+     * Process result list.
      *
      * @param exam the exam
      * @return the list

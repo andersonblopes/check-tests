@@ -352,7 +352,7 @@ public class MainController {
     }
 
     /**
-     * Candidate answers model and view.
+     * Upload candidate answers model and view.
      *
      * @param modelAndView the model and view
      * @return the model and view

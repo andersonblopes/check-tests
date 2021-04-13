@@ -9,7 +9,7 @@ public enum ExamStatus {
      * Approved exam status.
      */
     APPROVED,
-    
+
     /**
      * Waiting exam status.
      */
