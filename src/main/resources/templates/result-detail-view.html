@@ -80,7 +80,8 @@
                 <fieldset class="border border-success" th:if="${uploadCandidatesAnswers}">
                     <legend class="w-auto">Respostas do Candidato</legend>
                     <div class="row m-1">
-                        <ul class="col-2 col-sm-2 col-md-1" th:each="answer : ${examResult.getStudentAnswers()}">
+                        <ul class="col-4 col-sm-2 col-md-2 col-lg-1"
+                            th:each="answer : ${examResult.getStudentAnswers()}">
                             <div class="text-center border">
                                 <div class="border border-dark"
                                      th:classappend="${answer.valid ? 'bg-success text-white' : 'bg-danger text-white'}"
