@@ -32,8 +32,8 @@
                 </li>
             </ul>
         </div>
-        <form th:action="@{/restart}" class="form-inline my-2 my-lg-0">
-            <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Reiniciar processo</button>
+        <form th:action="@{/restart}" class="form-inline float-right">
+            <button class="btn btn-outline-danger" type="submit">Reiniciar processo</button>
         </form>
     </nav>
     <div>
@@ -45,13 +45,13 @@
     <div class="row">
 
         <!-- Exam -->
-        <div class="col-sm mb-3">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-4 mb-3">
             <div class="card border-info" th:if="${!uploadCorrectAnswers}">
                 <div class="card-header h6">Concurso</div>
                 <div class="card-body">
                     <p><a class="badge badge-pill badge-warning" href="/selection"
                           th:disabled="${!uploadCorrectAnswers}"
-                          title="Configurar o processo seletivo.">Configure</a> o processo seletivo</p>
+                          title="Configurar o processo seletivo.">Configure</a> processo seletivo</p>
                 </div>
             </div>
 
@@ -70,13 +70,13 @@
         </div>
 
         <!-- Candidates -->
-        <div class="col-sm mb-3">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-3">
             <div class="card border-info" th:if="${!uploadCandidates}">
                 <div class="card-header h6">Candidatos</div>
                 <div class="card-body">
                     <p><a class="badge badge-pill badge-warning" href="/candidates"
                           th:disabled="${!uploadCorrectAnswers}"
-                          title="Arquivo .csv contendo a lista dos candidatos.">Importar</a> os
+                          title="Arquivo .csv contendo a lista dos candidatos.">Importar</a>
                         candidatos inscritos.</p>
                 </div>
             </div>
@@ -93,14 +93,14 @@
         </div>
 
         <!-- Candidates answers -->
-        <div class="col-sm mb-3">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-3">
             <div class="card border-info" th:if="${!uploadCandidatesAnswers}">
                 <div class="card-header h6">Apuração</div>
                 <div class="card-body">
                     <p><a class="badge badge-pill badge-warning" href="/candidates-answers"
                           th:disabled="${!uploadCandidates}"
-                          title="Arquivo .csv contendo as respostas dos candidatos.">Importar</a> as
-                        respostas dos candidatos.</p>
+                          title="Arquivo .csv contendo as respostas dos candidatos.">Importar</a>
+                        respostas computadas</p>
                 </div>
             </div>
 
@@ -108,7 +108,7 @@
                  class="card text-white bg-success">
                 <div class="card-header h6">Apuração</div>
                 <div class="card-body">
-                    <span>Relação de candidatos que <strong>realizaram o concurso</strong> já incluídos no Sistema.</span></a>
+                    <span>Candidatos que <strong>realizaram o concurso</strong> já incluídos no Sistema.</span></a>
                 </div>
             </div>
         </div>
