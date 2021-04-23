@@ -45,6 +45,8 @@ public class MainService {
 
     /**
      * The Student answers.
+     * <p>
+     * This map is used to ensure ignore duplicate lines from the file.
      */
     private Map<String, List<Answer>> studentAnswers;
 
