@@ -51,6 +51,11 @@ public class MainService {
     private Map<String, List<Answer>> studentAnswers;
 
     /**
+     * The Unknown student.
+     */
+    private List<String> unknownStudent;
+
+    /**
      * The Exam result list.
      */
     private List<ExamResult> examResultList;
@@ -141,6 +146,7 @@ public class MainService {
      */
     public void extractStudentAnswersFromFile(MultipartFile file, Exam exam) throws IOException {
         List<String> lines = new ArrayList<>();
+        unknownStudent = new ArrayList<>();
 
         File tempFile = new File(System.getProperty("java.io.tmpdir") + "/" + "_" + RandomStringUtils.randomAlphabetic(10));
 
@@ -155,25 +161,42 @@ public class MainService {
             studentAnswers = new HashMap<>();
             for (String line : lines) {
                 String[] res = line.split("\n");
-                if (res[0].length() != (Constants.DIGITS_AMOUNT_FROM_STUDENT_INSCRIPTION + exam.getNumberOfQuestions())) {
-                    throw new IllegalArgumentException("Arquivo possui formato inválido!");
-                }
                 String inscription = res[0].substring(0, Constants.DIGITS_AMOUNT_FROM_STUDENT_INSCRIPTION);
                 String answerStr = res[0].substring(Constants.DIGITS_AMOUNT_FROM_STUDENT_INSCRIPTION);
-                studentAnswers.put(inscription, extractAnswersFromString(answerStr));
+
+                if (!studentExists(inscription)) {
+                    unknownStudent.add(inscription);
+                }
+                studentAnswers.put(inscription, extractAnswersFromString(answerStr, exam.getNumberOfQuestions()));
             }
         }
     }
 
     /**
+     * Student exists boolean.
+     *
+     * @param inscription the inscription
+     * @return the boolean
+     */
+    private boolean studentExists(String inscription) {
+        for (Student s : students) {
+            if (s.getMatricula().equalsIgnoreCase(inscription)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Extract answers from string list.
      *
-     * @param answersLine the answers line
+     * @param answersLine         the answers line
+     * @param amountAnswersToRead the amount answers to read
      * @return the list
      */
-    private List<Answer> extractAnswersFromString(String answersLine) {
+    private List<Answer> extractAnswersFromString(String answersLine, int amountAnswersToRead) {
         List<Answer> answersStudent = new ArrayList<>();
-        for (int i = 0; i < answersLine.length(); i++) {
+        for (int i = 0; i < amountAnswersToRead; i++) {
             char ch = answersLine.charAt(i);
             Answer answer = new Answer();
             answer.setQuestionNumber(i + 1);

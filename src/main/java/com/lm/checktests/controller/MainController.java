@@ -283,6 +283,14 @@ public class MainController {
             try {
 
                 mainService.extractStudentAnswersFromFile(file, exam);
+                if (mainService.getUnknownStudent().size() > 0) {
+                    message = "Matrícula(s): <strong>" + mainService.getUnknownStudent().toString() + "</strong> não existente(s) na lista dos candidatos inscritos no concurso, " +
+                            "<br>Por favor, verifique o arquivo com as respostas dos candidatos.";
+                    modelAndView.addObject("message", message);
+                    setStatusErrors(true);
+                    setUploadCandidatesAnswers(false);
+                    modelAndView.addObject("statusErrors", isStatusErrors());
+                }
 
             } catch (Exception e) {
                 message = "Ocorreu um erro durante o processamento do arquivo TXT.";
@@ -361,6 +369,7 @@ public class MainController {
     public ModelAndView uploadCandidateAnswers(ModelAndView modelAndView) {
         modelAndView.setViewName("upload-candidates-answers-view");
         cardHeader = "Apuração das respostas dos candidatos";
+        setStatusErrors(false);
         modelAndView = prepareModelAndView(modelAndView);
 
         return modelAndView;
