@@ -5,6 +5,7 @@ import com.lm.checktests.model.Exam;
 import com.lm.checktests.model.ExamResult;
 import com.lm.checktests.model.Student;
 import com.lm.checktests.service.MainService;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,9 @@ import java.util.List;
 /**
  * The type Main controller.
  */
-@Controller
-@Data
 @Slf4j
+@Data
+@Controller
 public class MainController {
 
     /**
@@ -250,6 +251,8 @@ public class MainController {
 
             } catch (Exception ex) {
                 message = "Ocorreu um erro durante o processamento do arquivo CSV.";
+                log.error(message);
+                log.error(ex.getMessage());
                 setStatusErrors(true);
             }
         }
@@ -294,6 +297,8 @@ public class MainController {
 
             } catch (Exception e) {
                 message = "Ocorreu um erro durante o processamento do arquivo TXT.";
+                log.error(message);
+                log.error(e.getMessage());
                 modelAndView.addObject("message", message);
                 setStatusErrors(true);
                 setUploadCandidatesAnswers(false);

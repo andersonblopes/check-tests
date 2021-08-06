@@ -68,6 +68,10 @@ public class MainService {
      * @throws IOException the io exception
      */
     public Exam extractAnswersFromFile(Exam exam) throws IOException {
+
+        log.info("Invoking extractAnswersFromFile");
+        log.info("Exam: {}", exam.getTitle());
+
         File tempFile = new File(System.getProperty("java.io.tmpdir") + "/" + exam.getFileUploaded().getName() + "_" + RandomStringUtils.randomAlphabetic(10));
         exam.getFileUploaded().transferTo(tempFile);
 
@@ -97,6 +101,10 @@ public class MainService {
      * @return the boolean
      */
     public boolean validateFile(MultipartFile file, String extension) {
+        log.info("Invoking validateFile");
+        log.info("File: {}", file.getName());
+        log.info("Extension: {}", extension);
+
         return !file.isEmpty() && getFileExtension(file.getOriginalFilename()).equalsIgnoreCase(extension);
     }
 
@@ -107,6 +115,9 @@ public class MainService {
      * @return the file extension
      */
     private String getFileExtension(String filename) {
+        log.info("Invoking getFileExtension");
+        log.info("Filename: {}", filename);
+
         if (filename.contains(".")) {
             return filename.substring(filename.lastIndexOf(".") + 1);
         } else {
@@ -122,6 +133,9 @@ public class MainService {
      * @throws IOException the io exception
      */
     public List<Student> parseStudentsFromFile(MultipartFile file) throws IOException {
+        log.info("Invoking parseStudentsFromFile");
+        log.info("Filename: {}", file.getName());
+
         // TODO: save students to database
 
         // parse CSV file to create a list of `Student` objects
@@ -145,6 +159,10 @@ public class MainService {
      * @throws IOException the io exception
      */
     public void extractStudentAnswersFromFile(MultipartFile file, Exam exam) throws IOException {
+        log.info("Invoking extractStudentAnswersFromFile");
+        log.info("Filename: {}", file.getName());
+        log.info("Exam: {}", exam.getTitle());
+
         List<String> lines = new ArrayList<>();
         unknownStudent = new ArrayList<>();
 
@@ -179,6 +197,9 @@ public class MainService {
      * @return the boolean
      */
     private boolean studentExists(String inscription) {
+        log.info("Invoking studentExists");
+        log.info("Inscription: {}", inscription);
+
         for (Student s : students) {
             if (s.getMatricula().equalsIgnoreCase(inscription)) {
                 return true;
@@ -195,6 +216,8 @@ public class MainService {
      * @return the list
      */
     private List<Answer> extractAnswersFromString(String answersLine, int amountAnswersToRead) {
+        log.info("Invoking extractAnswersFromString");
+
         List<Answer> answersStudent = new ArrayList<>();
         for (int i = 0; i < amountAnswersToRead; i++) {
             char ch = answersLine.charAt(i);
@@ -213,6 +236,9 @@ public class MainService {
      * @return the list
      */
     public List<ExamResult> processResult(Exam exam) {
+        log.info("Invoking processResult");
+        log.info("Exam: {}", exam.getTitle());
+
         examResultList = new ArrayList<>();
         if (studentAnswers != null) {
             for (Map.Entry<String, List<Answer>> studentAnswers : studentAnswers.entrySet()) {
@@ -238,6 +264,8 @@ public class MainService {
      * @param exam           the exam
      */
     private void sortExamResults(List<ExamResult> examResultList, Exam exam) {
+        log.info("Invoking sortExamResults");
+        log.info("Exam: {}", exam.getTitle());
 
         // Order by average
         Collections.sort(examResultList, Collections.reverseOrder());
@@ -260,6 +288,8 @@ public class MainService {
      * @return the double
      */
     private Double calcAverageFromStudent(ExamResult examResult) {
+        log.info("Invoking calcAverageFromStudent");
+
         Integer amountStudentCorrectAnswers = 0;
         List<Answer> rightAnswers = examResult.getExam().getAnswers();
         List<Answer> studentAnswers = examResult.getStudentAnswers();
@@ -283,6 +313,9 @@ public class MainService {
      * @return the student
      */
     private Student recoverStudentByMatricula(String studentMatricula) {
+        log.info("Invoking recoverStudentByMatricula");
+        log.info("Student Matricula: {}", studentMatricula);
+
         Student studentFound = null;
         for (Student student : students) {
             String matricula = String.valueOf(student.getMatricula());
@@ -303,6 +336,8 @@ public class MainService {
      * @return the exam result from list
      */
     public ExamResult getExamResultFromList(String inscription, List<ExamResult> examResultList) {
+        log.info("Invoking getExamResultFromList");
+        log.info("Inscription: {}", inscription);
 
         ExamResult examResultFound = null;
 
